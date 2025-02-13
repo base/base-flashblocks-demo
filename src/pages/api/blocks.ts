@@ -1,7 +1,7 @@
 import type {NextApiRequest, NextApiResponse} from 'next'
 import {BaseError, BlockNotFoundError, createPublicClient, http} from 'viem'
 import {base} from 'viem/chains'
-import {Block, Transaction} from "@/utils/block-utils";
+import {Block} from "@/utils/block-utils";
 
 type Data = {
     success: boolean
@@ -20,10 +20,6 @@ const client = createPublicClient({
 
 export async function getBlock(blockNumber?: string): Promise<Data> {
     try {
-        let args = {
-            blockTag: 'latest'
-        };
-
         let block;
         if (blockNumber) {
             block = await client.getBlock({

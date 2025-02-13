@@ -1,4 +1,4 @@
-import type { Address, Hash } from "viem"
+import type {Address} from "viem"
 
 export interface SubBlock {
   blockNumber: number
@@ -30,11 +30,7 @@ export function generateAddress(): Address {
   return `0x${Array.from({ length: 40 }, () => Math.floor(Math.random() * 16).toString(16)).join("")}` as Address
 }
 
-export function truncateAddress(address: Address): string {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`
-}
-
-export function truncateHash(hash: Hash): string {
+export function truncateHash(hash: string): string {
   return `${hash.slice(0, 6)}...${hash.slice(-4)}`
 }
 

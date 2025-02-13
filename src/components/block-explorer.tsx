@@ -6,8 +6,7 @@ import {Switch} from "@/components/ui/switch"
 import {Label} from "@/components/ui/label"
 import {NormalBlockList} from "./normal-block-list"
 import {FlashBlockList} from "./flash-block-list"
-import {type Block, generateCurrentBlock, addSubBlock, generatePendingBlock} from "@/utils/block-utils"
-import {NextPageContext} from "next";
+import {addSubBlock, type Block, generatePendingBlock} from "@/utils/block-utils"
 
 interface State {
     blocks: Block[]
@@ -67,7 +66,7 @@ export function BlockExplorer({startBlock}: { startBlock: Block }) {
     const {blocks, pendingBlock} = state;
 
     const blockList = () => {
-        if (true) {
+        if (false) {
             return <div className={`grid "grid-cols-1 gap-6`}>
                 <FlashBlockList blocks={blocks} pendingBlock={pendingBlock} showFlashBlocks={flashMode}/>
             </div>

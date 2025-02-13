@@ -1,5 +1,5 @@
-import { BlockCard } from "@/components/block"
-import { type Block, type SubBlock, truncateHash } from "@/utils/block-utils"
+import {BlockCard} from "@/components/block"
+import {type Block} from "@/utils/block-utils"
 import {SubBlockCard} from "@/components/subblock";
 
 interface FlashBlockListProps {
@@ -27,8 +27,8 @@ export function FlashBlockList({ blocks, pendingBlock, showFlashBlocks }: FlashB
         </div>
       )}
 
-      {blocks.map((block) => (
-          <BlockCard block={block} key={block.blockNumber} />
+      {blocks.map((block, idx) => (
+          <BlockCard block={block} key={block.blockNumber} isNew={!showFlashBlocks && idx == 0} />
       ))}
     </div>
   )

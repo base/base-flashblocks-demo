@@ -1,6 +1,4 @@
-import { ChevronRight } from "lucide-react"
-import { Card } from "@/components/ui/card"
-import {type Block, truncateHash, getRelativeTime, transactionsFor} from "@/utils/block-utils"
+import {type Block} from "@/utils/block-utils"
 import {BlockCard} from "@/components/block";
 
 interface NormalBlockListProps {
