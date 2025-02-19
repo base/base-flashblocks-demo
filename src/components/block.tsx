@@ -6,7 +6,6 @@ export function BlockCard({block, isNew}: { block: Block, isNew: boolean }) {
     const transactions = transactionsFor(block);
 
     if (isNew) {
-        console.log("DANYAL NEW", block.blockNumber)
     } else {
     }
 
