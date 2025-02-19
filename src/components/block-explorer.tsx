@@ -1,69 +1,17 @@
 "use client"
 
-import {useEffect, useRef, useState} from "react"
+import {useState} from "react"
 import {Terminal} from "lucide-react"
 import {Switch} from "@/components/ui/switch"
 import {Label} from "@/components/ui/label"
 import {NormalBlockList} from "./normal-block-list"
 import {FlashBlockList} from "./flash-block-list"
-import {addSubBlock, type Block, generatePendingBlock} from "@/utils/block-utils"
+import {useFlashblocks} from "@/hooks/useFlashblocks";
 
-interface State {
-    blocks: Block[]
-    pendingBlock?: Block
-    tick: number
-}
-
-export function BlockExplorer({startBlock}: { startBlock: Block }) {
+export function BlockExplorer() {
     const [flashMode, setFlashMode] = useState(false)
 
-    const [state, setState] = useState<State>({
-        blocks: [startBlock],
-        pendingBlock: generatePendingBlock(startBlock),
-        tick: 0
-    })
-
-    const lastBlockNumber = useRef(startBlock.blockNumber);
-
-    useEffect(() => {
-        const subBlockInterval = setInterval(async () => {
-            try {
-                // Increment the block number we want to fetch
-                const nextBlockNumber = lastBlockNumber.current + 1;
-
-                const resp = await fetch(`/api/blocks?blockNumber=${nextBlockNumber}`)
-                const json = await resp.json()
-                if (json.success) {
-                    const newBlock = json.data;
-                    lastBlockNumber.current = nextBlockNumber;
-                    setState(prevState => {
-                        const blockCopy = [newBlock, ...prevState.blocks];
-                        blockCopy.sort((a, b) => b.blockNumber - a.blockNumber);
-                        return {
-                            tick: prevState.tick + 1,
-                            pendingBlock: generatePendingBlock(newBlock),
-                            blocks: [...blockCopy].slice(0, 10)
-                        }
-                    })
-                } else {
-                    setState(prevState => {
-                        return {
-                            ...prevState,
-                            pendingBlock: addSubBlock(prevState.pendingBlock!),
-                            tick: prevState.tick + 1,
-                        }
-                    })
-                }
-
-            } catch (error) {
-                console.error(error);
-            }
-        }, 200)
-
-        return () => clearInterval(subBlockInterval);
-    }, []) // Empty dependency array since we're using refs and state updater
-
-    const {blocks, pendingBlock} = state;
+    const {blocks, pendingBlock} = useFlashblocks();
 
     const blockList = () => {
         if (false) {
