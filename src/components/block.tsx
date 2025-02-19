@@ -2,12 +2,8 @@ import {Block, getRelativeTime, transactionsFor, truncateHash} from "@/utils/blo
 import {Card} from "@/components/ui/card";
 import {ChevronRight} from "lucide-react";
 
-export function BlockCard({block, isNew}: { block: Block, isNew: boolean }) {
+export function BlockCard({block, isNew, highlightTransactions}: { block: Block, isNew: boolean, highlightTransactions: Record<string, boolean> }) {
     const transactions = transactionsFor(block);
-
-    if (isNew) {
-    } else {
-    }
 
     return <Card
         key={block.blockNumber}
@@ -22,7 +18,7 @@ export function BlockCard({block, isNew}: { block: Block, isNew: boolean }) {
             </div>
             <div className="space-y-2 text-xs">
                 {transactions.slice(0, 5).map((tx, index) => (
-                    <div key={index} className="flex justify-between items-center text-gray-400 hover:text-gray-300">
+                    <div key={index} className={`flex justify-between items-center text-xs ${highlightTransactions[tx.hash] ? "text-red-400" : "text-gray-300"} hover:text-gray-200`}>
                         <div className="flex items-center gap-2">
                             <span>{truncateHash(tx.from)}</span>
                             {tx.to && <>

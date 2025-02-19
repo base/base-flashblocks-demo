@@ -6,9 +6,10 @@ interface FlashBlockListProps {
   blocks: Block[]
   pendingBlock?: Block
   showFlashBlocks: boolean
+  highlightTransactions: Record<string, boolean>
 }
 
-export function FlashBlockList({ blocks, pendingBlock, showFlashBlocks }: FlashBlockListProps) {
+export function FlashBlockList({ blocks, pendingBlock, showFlashBlocks, highlightTransactions }: FlashBlockListProps) {
   return (
     <div className="space-y-6 relative">
       <div className="absolute -left-4 top-0 bottom-0 w-px bg-gradient-to-b from-[#0052FF] to-transparent opacity-50" />
@@ -21,6 +22,7 @@ export function FlashBlockList({ blocks, pendingBlock, showFlashBlocks }: FlashB
                 blockId={Number(pendingBlock.blockNumber)}
                 subBlock={sb}
                 isPending={true}
+                highlightTransactions={highlightTransactions}
               />
             ))
             .reverse()}
@@ -28,7 +30,7 @@ export function FlashBlockList({ blocks, pendingBlock, showFlashBlocks }: FlashB
       )}
 
       {blocks.map((block, idx) => (
-          <BlockCard block={block} key={block.blockNumber} isNew={!showFlashBlocks && idx == 0} />
+          <BlockCard block={block} key={block.blockNumber} isNew={!showFlashBlocks && idx == 0} highlightTransactions={highlightTransactions} />
       ))}
     </div>
   )
