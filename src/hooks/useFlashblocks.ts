@@ -3,8 +3,6 @@ import {Block, SubBlock} from "@/utils/block-utils";
 import {parseTransaction} from 'viem/op-stack';
 import {OpStackTransactionSerialized} from "viem/chains";
 import {TransactionRequestBase} from "viem";
-import { keccak256 } from 'viem'
-import { toRlp } from 'viem'
 
 interface Flashblock {
     payload_id: string;
@@ -29,7 +27,7 @@ interface Flashblock {
         transactions: string[];
     };
     metadata: {
-        receipts: Record<string, any>;
+        receipts: Record<string, unknown>;
     };
 }
 
@@ -69,14 +67,7 @@ function updateBlock(block: Block, flashBlock: Flashblock): Block {
     };
 
     flashBlock.diff.transactions.map((t) => {
-        // const tx = parseTransaction(t as OpStackTransactionSerialized) as TransactionRequestBase;
-        console.log("DAN TX", t);
         const tx = parseTransaction(t as OpStackTransactionSerialized<'eip1559'>) ;
-        console.log("DAN", tx);
-        // toRlp(tx);
-
-        0xf86c54830f433a82520894557bb85fc501616668d39d82aaa9b25027e9e296865af3107a400080840166fb24a04a21a3542c8380d9e973dc604521ccbc91013fc494cf939ea13efcf7acd16a7da03955b2d88aa08611434b02101f4259606538054be19ffe2c15ff94e2a64cefa1
-
         newSubBlock.transactions.push({
             from: "",
             to: tx.to || "",
