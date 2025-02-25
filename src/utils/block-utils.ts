@@ -1,13 +1,13 @@
 export interface SubBlock {
   blockNumber: number
   transactions: Transaction[]
+  transactionHashes: string[]
 }
 
 export interface Transaction {
-  hash: string
   from: string
   to: string
-  value: string
+  value: bigint
 }
 
 export interface Block {
@@ -18,15 +18,7 @@ export interface Block {
 }
 
 export function transactionsFor(block: Block): Transaction[] {
-  if (block.subBlocks.length > 0) {
-    return block.subBlocks.flatMap((subBlock) => subBlock.transactions)
-  }
-  return block.transactions
-}
-
-
-export function truncateHash(hash: string): string {
-  return `${hash.slice(0, 6)}...${hash.slice(-4)}`
+  return block.subBlocks.flatMap((subBlock) => subBlock.transactions)
 }
 
 export function getRelativeTime(timestamp: number) {
@@ -34,3 +26,6 @@ export function getRelativeTime(timestamp: number) {
   return `${seconds}s ago`
 }
 
+export function truncateHash(hash: string): string {
+  return `${hash.slice(0, 6)}...${hash.slice(-4)}`
+}

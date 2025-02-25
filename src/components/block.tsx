@@ -18,7 +18,7 @@ export function BlockCard({block, isNew, highlightTransactions}: { block: Block,
             </div>
             <div className="space-y-2 text-xs">
                 {transactions.slice(0, 5).map((tx, index) => (
-                    <div key={index} className={`flex justify-between items-center text-xs ${highlightTransactions[tx.hash] ? "text-red-400" : "text-gray-300"} hover:text-gray-200`}>
+                    <div key={index} className={`flex justify-between items-center text-xs ${highlightTransactions["todo"] ? "text-red-400" : "text-gray-300"} hover:text-gray-200`}>
                         <div className="flex items-center gap-2">
                             <span>{truncateHash(tx.from)}</span>
                             {tx.to && <>
@@ -26,7 +26,6 @@ export function BlockCard({block, isNew, highlightTransactions}: { block: Block,
                                 <span>{truncateHash(tx.to)}</span>
                             </>}
                         </div>
-                        <div className="text-grey-600">({(Number(tx.value) / 1e18).toFixed(4)} ETH)</div>
                     </div>
                 ))}
                 {transactions.length > 5 && (

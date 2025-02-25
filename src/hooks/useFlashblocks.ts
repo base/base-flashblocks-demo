@@ -2,86 +2,89 @@ import {useEffect, useState} from 'react';
 import {Block, SubBlock} from "@/utils/block-utils";
 import {parseTransaction} from 'viem/op-stack';
 import {OpStackTransactionSerialized} from "viem/chains";
-import type {TransactionRequestBase} from "viem";
-
-type HexString = string;
-
-interface ExecutionPayload {
-    baseFeePerGas: HexString;
-    blobGasUsed: HexString;
-    blockHash: HexString;
-    blockNumber: HexString;
-    excessBlobGas: HexString;
-    extraData: HexString;
-    feeRecipient: HexString;
-    gasLimit: HexString;
-    gasUsed: HexString;
-    logsBloom: HexString;
-    parentHash: HexString;
-    prevRandao: HexString;
-    receiptsRoot: HexString;
-    stateRoot: HexString;
-    timestamp: HexString;
-    transactions: HexString[];
-}
-
-interface Response {
-    blockValue: HexString;
-    executionPayload: ExecutionPayload;
-    parentBeaconBlockRoot: HexString;
-    shouldOverrideBuilder: boolean;
-}
+import {TransactionRequestBase} from "viem";
+import { keccak256 } from 'viem'
+import { toRlp } from 'viem'
 
 interface Flashblock {
-    response: Response;
-    tx_hashes: HexString[];
+    payload_id: string;
+    index: number;
+    base: {
+        parent_beacon_block_root: string;
+        parent_hash: string;
+        fee_recipient: string;
+        prev_randao: string;
+        block_number: string;
+        gas_limit: string;
+        timestamp: string;
+        extra_data: string;
+        base_fee_per_gas: string;
+    };
+    diff: {
+        state_root: string;
+        receipts_root: string;
+        logs_bloom: string;
+        gas_used: string;
+        block_hash: string;
+        transactions: string[];
+    };
+    metadata: {
+        receipts: Record<string, any>;
+    };
 }
+
+
 
 export function flashBlockToBlock(flashBlock: Flashblock): Block {
     const block: Block = {
-        blockNumber: Number(flashBlock.response.executionPayload.blockNumber),
-        timestamp: Number(flashBlock.response.executionPayload.timestamp),
+        blockNumber: Number(flashBlock.base.block_number),
+        timestamp: Number(flashBlock.base.timestamp),
         transactions: [],
         subBlocks: [{
             blockNumber: 1,
             transactions: [],
+            transactionHashes: [],
         }],
     };
 
-    flashBlock.tx_hashes.map((hash, idx) => {
-        const tx = parseTransaction(flashBlock.response.executionPayload.transactions[idx] as OpStackTransactionSerialized) as TransactionRequestBase;
+    flashBlock.diff.transactions.map((t ) => {
+        const tx = parseTransaction(t as OpStackTransactionSerialized) as TransactionRequestBase;
         block.subBlocks[0].transactions.push({
-            hash: hash,
             from: tx.from || "",
             to: tx.to || "",
-            value: "0.01",
+            value: tx.value ? tx.value : BigInt(0),
         });
     });
+
+    block.subBlocks[0].transactionHashes = Object.keys(flashBlock.metadata.receipts);
 
     return block;
 }
 
 function updateBlock(block: Block, flashBlock: Flashblock): Block {
     const newSubBlock: SubBlock = {
-        blockNumber: block.subBlocks.length + 1,
+        blockNumber: flashBlock.index,
         transactions: [],
+        transactionHashes: [],
     };
 
-    const seenHashes = new Set(block.subBlocks.flatMap((subBlock) => subBlock.transactions.map((tx) => tx.hash)));
+    flashBlock.diff.transactions.map((t) => {
+        // const tx = parseTransaction(t as OpStackTransactionSerialized) as TransactionRequestBase;
+        console.log("DAN TX", t);
+        const tx = parseTransaction(t as OpStackTransactionSerialized<'eip1559'>) ;
+        console.log("DAN", tx);
+        // toRlp(tx);
 
-    flashBlock.tx_hashes.map((hash, idx) => {
-        const tx = parseTransaction(flashBlock.response.executionPayload.transactions[idx] as OpStackTransactionSerialized) as TransactionRequestBase;
-        if (seenHashes.has(hash)) {
-            return;
-        }
+        0xf86c54830f433a82520894557bb85fc501616668d39d82aaa9b25027e9e296865af3107a400080840166fb24a04a21a3542c8380d9e973dc604521ccbc91013fc494cf939ea13efcf7acd16a7da03955b2d88aa08611434b02101f4259606538054be19ffe2c15ff94e2a64cefa1
 
         newSubBlock.transactions.push({
-            hash: hash,
-            from: tx.from || "",
+            from: "",
             to: tx.to || "",
-            value: "0.01",
+            value: tx.value ? tx.value : BigInt(0),
         });
     })
+
+    newSubBlock.transactionHashes = Object.keys(flashBlock.metadata.receipts);
 
     return {
         ...block,
@@ -115,30 +118,29 @@ export const useFlashblocks = (): State => {
     useEffect(() => {
         const ws = new WebSocket(url);
 
-        ws.onmessage = (event) => {
-            const newFlashBlock = JSON.parse(event.data);
-            const newFlashBlockNumber = Number(newFlashBlock.response.executionPayload.blockNumber);
+        ws.onmessage = async (event) => {
+            const newFlashBlock: Flashblock = JSON.parse(await event.data.text());
 
             setState((state) => {
                 const { blocks, pendingBlock } = state;
 
-                if (pendingBlock == undefined) {
+                if (pendingBlock == undefined && newFlashBlock.index === 0) {
                     return {
                         pendingBlock: flashBlockToBlock(newFlashBlock),
                         blocks: clamp([...blocks]),
                     };
-                } else if (pendingBlock?.blockNumber < newFlashBlockNumber) {
+                } else if (newFlashBlock.index === 0) {
                     return {
                         pendingBlock: flashBlockToBlock(newFlashBlock),
-                        blocks: clamp([pendingBlock, ...blocks]),
+                        blocks: clamp([pendingBlock, ...blocks].filter(b => b !== undefined)),
                     };
-                } else if (pendingBlock?.blockNumber === newFlashBlockNumber) {
+                } else if (pendingBlock !== undefined) {
                     return {
                         pendingBlock: updateBlock(pendingBlock, newFlashBlock),
                         blocks: clamp([...blocks]),
                     };
                 } else {
-                    console.error("Unexpected block number", pendingBlock?.blockNumber, newFlashBlockNumber);
+                    console.log("waiting for block start")
                     return state;
                 }
             });
