@@ -10,6 +10,9 @@ interface SubBlockCardProps {
 }
 
 export function SubBlockCard({ blockId, subBlock, isPending, highlightTransactions }: SubBlockCardProps) {
+    if (subBlock.transactions.length > 1) {
+        console.log("DAN", highlightTransactions, subBlock.transactions)
+    }
     return (
         <Card
             className={`bg-[#1A1A1A] border-[#2A2A2A] ${isPending ? "border-l-[#0052FF]" : ""}`}
@@ -23,7 +26,7 @@ export function SubBlockCard({ blockId, subBlock, isPending, highlightTransactio
                 </div>
                 <div className="space-y-1">
                     {subBlock.transactions.map((tx, index) => (
-                        <div key={index} className={`flex justify-between items-center text-xs ${highlightTransactions["todo"] ? "text-red-400" : "text-gray-300"} hover:text-gray-200`}>
+                        <div key={index} className={`flex justify-between items-center text-xs ${highlightTransactions[tx.hash] ? "text-red-400" : "text-gray-300"} hover:text-gray-200`}>
                             <div className="flex items-center gap-1">
                                 <span>{truncateHash(tx.from)}</span>
                                 {tx.to && <>
