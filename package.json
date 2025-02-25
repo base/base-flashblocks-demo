@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@coinbase/onchainkit": "^0.37.3",
     "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-switch": "^1.1.3",
     "@tanstack/react-query": "^5.66.7",
