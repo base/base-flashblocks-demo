@@ -9,13 +9,6 @@ interface SubBlockCardProps {
     highlightTransactions: Record<string, boolean>
 }
 
-/*
-      className={`px-4 py-2 rounded ${
-        isActive ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
-      }`}
-
- */
-
 export function SubBlockCard({ blockId, subBlock, isPending, highlightTransactions }: SubBlockCardProps) {
     return (
         <Card
@@ -30,7 +23,7 @@ export function SubBlockCard({ blockId, subBlock, isPending, highlightTransactio
                 </div>
                 <div className="space-y-1">
                     {subBlock.transactions.map((tx, index) => (
-                        <div key={index} className={`flex justify-between items-center text-xs ${highlightTransactions[tx.hash] ? "text-red-400" : "text-gray-300"} hover:text-gray-200`}>
+                        <div key={index} className={`flex justify-between items-center text-xs ${highlightTransactions["todo"] ? "text-red-400" : "text-gray-300"} hover:text-gray-200`}>
                             <div className="flex items-center gap-1">
                                 <span>{truncateHash(tx.from)}</span>
                                 {tx.to && <>
