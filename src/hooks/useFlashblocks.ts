@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {Block, SubBlock} from "@/utils/block-utils";
 import {parseTransaction} from 'viem/op-stack';
 import {OpStackTransactionSerialized} from "viem/chains";
-import {TransactionRequestBase} from "viem";
+import {keccak256, TransactionRequestBase} from "viem";
 
 interface Flashblock {
     payload_id: string;
@@ -48,6 +48,7 @@ export function flashBlockToBlock(flashBlock: Flashblock): Block {
     flashBlock.diff.transactions.map((t ) => {
         const tx = parseTransaction(t as OpStackTransactionSerialized) as TransactionRequestBase;
         block.subBlocks[0].transactions.push({
+            hash: keccak256(t as `0x{string}`),
             from: tx.from || "",
             to: tx.to || "",
             value: tx.value ? tx.value : BigInt(0),
@@ -67,8 +68,9 @@ function updateBlock(block: Block, flashBlock: Flashblock): Block {
     };
 
     flashBlock.diff.transactions.map((t) => {
-        const tx = parseTransaction(t as OpStackTransactionSerialized<'eip1559'>) ;
+        const tx = parseTransaction(t as OpStackTransactionSerialized) ;
         newSubBlock.transactions.push({
+            hash: keccak256(t as `0x{string}`),
             from: "",
             to: tx.to || "",
             value: tx.value ? tx.value : BigInt(0),

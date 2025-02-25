@@ -5,6 +5,7 @@ export interface SubBlock {
 }
 
 export interface Transaction {
+  hash: string
   from: string
   to: string
   value: bigint
