@@ -1,0 +1,14 @@
+{
+    "semi": true,
+    "singleQuote": false,
+    "tabWidth": 4,
+    "printWidth": 150,
+    "trailingComma": "es5",
+    "importOrder": ["^@/(.*)$", "^[./]"],
+    "importOrderSeparation": false,
+    "bracketSpacing": false,
+    "singleAttributePerLine": false,
+    "jsxBracketSameLine": true,
+    "arrowParens": "avoid",
+    "jsxParens": false
+}
