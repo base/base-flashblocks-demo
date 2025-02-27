@@ -14,6 +14,8 @@ import {Header} from "@/components/header";
 import { useSwitchChain } from 'wagmi'
 import {baseSepolia} from "viem/chains";
 
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH
+
 function SendTransaction({highlightTransactions}: {highlightTransactions: (txn: string) => void}) {
     const { switchChain } = useSwitchChain()
     const { chainId } = useAccount();
@@ -111,7 +113,7 @@ export function BlockExplorer() {
     return (
         <div className="min-h-screen bg-[#0A0A0A] text-white">
             <Header>
-                <Link href="/docs" className="bg-[#515151] py-2 px-4 rounded-full font-semibold">
+                <Link href={`${BASE_PATH}/docs`} className="bg-[#515151] py-2 px-4 rounded-full font-semibold">
                     Start Building
                 </Link>
                 <AccountButton />
