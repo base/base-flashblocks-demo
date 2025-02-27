@@ -1,27 +1,25 @@
 "use client";
 
 import {useState} from "react";
-import {Terminal} from "lucide-react";
 import {Switch} from "@/components/ui/switch";
 import {Label} from "@/components/ui/label";
 import {NormalBlockList} from "./normal-block-list";
 import {FlashBlockList} from "./flash-block-list";
 import {useFlashblocks} from "@/hooks/useFlashblocks";
-import {useAccount, useBalance, useDisconnect, useSendTransaction} from "wagmi";
-import {ConnectWallet, Wallet, WalletDefault} from "@coinbase/onchainkit/wallet";
+import {injected, useAccount, useConnect, useDisconnect, useSendTransaction} from "wagmi";
 import {parseEther} from "viem";
 import Link from "next/link";
+import Image from "next/image";
+import {Header} from "@/components/header";
 
 function SendTransaction({highlightTransactions}: {highlightTransactions: (txn: string) => void}) {
     const {isPending, sendTransaction} = useSendTransaction();
-    const {disconnect} = useDisconnect();
 
     if (isPending) {
         return <div>...</div>;
     }
 
     return (
-        <>
             <button
                 disabled={!sendTransaction}
                 onClick={() => {
@@ -32,53 +30,51 @@ function SendTransaction({highlightTransactions}: {highlightTransactions: (txn: 
                         },
                         {
                             onSuccess: hash => {
-                                console.log("onSuccess", hash);
                                 highlightTransactions(hash);
                             },
                         }
                     );
                 }}
-                className="bg-[#2A2A2A] py-3 px-4 rounded font-semibold">
-                Try flashblocks
+                className="bg-[#0052FF] py-2 px-4 rounded-full font-semibold">
+                Send Transaction
             </button>
-            <button
-                className="bg-[#2A2A2A] py-3 px-4 rounded font-semibold"
-                onClick={() => {
-                    disconnect();
-                }}>
-                Disconnect
-            </button>
-        </>
     );
+}
+
+function AccountButton() {
+    const {isConnected } = useAccount()
+    const { connect} = useConnect()
+    const { disconnect } = useDisconnect()
+
+    if (isConnected) {
+        return <button className="bg-[#1A1A1A] py-2 px-4 rounded-full font-semibold" onClick={() => disconnect()}>Disconnect</button>
+    } else {
+        return <button className="bg-[#0052FF] py-2 px-4 rounded-full font-semibold" onClick={() => connect({ connector: injected() })}>Connect</button>
+    }
 }
 
 export function BlockExplorer() {
     const account = useAccount();
-    const balance = useBalance({
-        address: account.address,
-    });
     const [flashMode, setFlashMode] = useState(false);
     const {blocks, pendingBlock} = useFlashblocks();
     const [txns, setTxns] = useState<Record<string, boolean>>({});
 
     const blockList = () => {
-        if (false) {
-            return (
-                <div className={`grid "grid-cols-1 gap-6`}>
-                    <FlashBlockList blocks={blocks} pendingBlock={pendingBlock} showFlashBlocks={flashMode} highlightTransactions={txns} />
-                </div>
-            );
-        } else {
             return (
                 <div className={`grid ${flashMode ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"} gap-6`}>
-                    <NormalBlockList blocks={blocks} highlightTransactions={txns} />
-                    {flashMode && <FlashBlockList blocks={blocks} pendingBlock={pendingBlock} showFlashBlocks={true} highlightTransactions={txns} />}
+                    <div>
+                        <h1 className="text-xl font-bold">Blocks</h1>
+                        <NormalBlockList blocks={blocks} highlightTransactions={txns} />
+                    </div>
+                    {flashMode && <div>
+                        <h1 className="text-xl font-bold">Flashblocks</h1>
+                        <FlashBlockList blocks={blocks} pendingBlock={pendingBlock} showFlashBlocks={true} highlightTransactions={txns} />
+                    </div>}
                 </div>
             );
-        }
     };
 
-    const menuButton = () => {
+    const sendTransactionButton = () => {
         if (account.isConnected) {
             return (
                 <SendTransaction
@@ -92,52 +88,31 @@ export function BlockExplorer() {
                     }}
                 />
             );
-        } else {
-            return (
-                <Wallet className="bg-[#2A2A2A] rounded">
-                    <ConnectWallet />
-                </Wallet>
-            );
         }
     };
 
     return (
         <div className="min-h-screen bg-[#0A0A0A] text-white">
-            <nav className="border-b border-[#1A1A1A] bg-[#0A0A0A]/90 backdrop-blur-xl sticky top-0 z-50">
-                <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-                    <div className="flex items-center gap-8">
-                        <img src="/Base_Wordmark_White.svg" alt="Base" className="h-6" />
-                        <Link href="/docs" className="text-xl font-bold hover:text-[#0052FF] transition-colors">
-                            docs
-                        </Link>
-                    </div>
-                    <div className="flex items-center gap-8">
-                        {menuButton()}
-                        {balance.data?.formatted && <p className="text-l font-bold">{balance.data?.formatted.slice(0, 5)} ETH</p>}
-                    </div>
+            <Header>
+                <Link href="/docs" className="bg-[#1A1A1A] py-2 px-4 rounded-full font-semibold">
+                    Docs
+                </Link>
+                <AccountButton />
+                {sendTransactionButton()}
+                <div className="flex items-center gap-3 bg-[#1A1A1A] px-2 py-2 rounded-full">
+                    <Switch
+                        id="flash-mode"
+                        checked={flashMode}
+                        onCheckedChange={setFlashMode}
+                        className="data-[state=checked]:bg-[#0052FF]"
+                    />
+                    <Label htmlFor="flash-mode" className="text-sm cursor-pointer select-none">
+                        <Image src="/flashblocks.svg" alt="Flashblocks Logo" width={25} height={25} />
+                    </Label>
                 </div>
-            </nav>
+            </Header>
 
             <div className="max-w-6xl mx-auto px-4 py-8">
-                <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-3">
-                        <Terminal className="w-5 h-5 text-[#0052FF]" />
-                        <h1 className="text-xl font-bold">Live Blocks</h1>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-3 bg-[#1A1A1A] px-3 py-2 rounded-full">
-                            <Switch
-                                id="flash-mode"
-                                checked={flashMode}
-                                onCheckedChange={setFlashMode}
-                                className="data-[state=checked]:bg-[#0052FF]"
-                            />
-                            <Label htmlFor="flash-mode" className="text-sm cursor-pointer select-none">
-                                ⚡🤖
-                            </Label>
-                        </div>
-                    </div>
-                </div>
                 {blockList()}
             </div>
         </div>

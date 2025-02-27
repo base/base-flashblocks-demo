@@ -29,10 +29,18 @@
   }
 }
 
+@font-face {
+  font-family: CoinbaseSans;
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+  src: url("/fonts/Coinbase_Sans-Medium-web-1.32.woff2") format("woff2");
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "CoinbaseSans", "Helvetica Neue", "Arial";
 }
 
 @layer base {
