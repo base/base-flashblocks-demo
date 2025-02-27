@@ -32,8 +32,8 @@ export default function Docs() {
         </Link>
       </Header>
 
-      <div className="container mx-auto p-8">
-        <div className="space-y-6">
+      <div className="container mx-auto pr-8 pl-8 pt-4 pb-8">
+        <div className="space-y-4">
           {/* Overview Section */}
           <Card className="bg-[#1A1A1A] border border-[#2A2A2A]">
             <CardHeader>
@@ -46,8 +46,8 @@ export default function Docs() {
               <ul className="space-y-2">
                 <li>
                   <a
-                    href="#websocket"
-                    className="text-white hover:text-gray-400 transition-colors flex items-center gap-2"
+                      href="#websocket"
+                      className="text-white hover:text-gray-400 transition-colors flex items-center gap-2"
                   >
                     WebSocket API
                     <span className="text-xs text-gray-400">→</span>
@@ -55,8 +55,8 @@ export default function Docs() {
                 </li>
                 <li>
                   <a
-                    href="#rpc"
-                    className="text-white hover:text-gray-400 transition-colors flex items-center gap-2"
+                      href="#rpc"
+                      className="text-white hover:text-gray-400 transition-colors flex items-center gap-2"
                   >
                     RPC API
                     <span className="text-xs text-gray-400">→</span>
@@ -66,10 +66,13 @@ export default function Docs() {
             </CardContent>
           </Card>
 
+          <div className="grid grid-cols-2 gap-4">
+
+
           {/* WebSocket API Section */}
           <Card
-            id="websocket"
-            className="bg-[#1A1A1A] border border-[#2A2A2A] scroll-mt-8"
+              id="websocket"
+              className="bg-[#1A1A1A] border border-[#2A2A2A] scroll-mt-8"
           >
             <CardHeader>
               <CardTitle className="text-white">WebSocket API</CardTitle>
@@ -118,18 +121,18 @@ export default function Docs() {
                     First payload includes base block data
                   </p>
                   <button
-                    onClick={() => setShowIndex0Response(!showIndex0Response)}
-                    className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-2"
+                      onClick={() => setShowIndex0Response(!showIndex0Response)}
+                      className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-2"
                   >
                     {showIndex0Response ? (
-                      <ChevronUp size={16} />
+                        <ChevronUp size={16}/>
                     ) : (
-                      <ChevronDown size={16} />
+                        <ChevronDown size={16}/>
                     )}
                     {showIndex0Response ? "Hide Response" : "Show Response"}
                   </button>
                   {showIndex0Response && (
-                    <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
+                      <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
                       <code className="text-sm text-white">{`{
   "payload_id": "0x03997352d799c31a",
   "index": 0,
@@ -181,18 +184,18 @@ export default function Docs() {
                     Subsequent payloads only include diff data
                   </p>
                   <button
-                    onClick={() => setShowIndexNResponse(!showIndexNResponse)}
-                    className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-2"
+                      onClick={() => setShowIndexNResponse(!showIndexNResponse)}
+                      className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-2"
                   >
                     {showIndexNResponse ? (
-                      <ChevronUp size={16} />
+                        <ChevronUp size={16}/>
                     ) : (
-                      <ChevronDown size={16} />
+                        <ChevronDown size={16}/>
                     )}
                     {showIndexNResponse ? "Hide Response" : "Show Response"}
                   </button>
                   {showIndexNResponse && (
-                    <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
+                      <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
                       <code className="text-sm text-white">{`{
   "payload_id": "0x03e303378749418d",
   "index": 4,
@@ -232,8 +235,8 @@ export default function Docs() {
 
           {/* RPC API Section */}
           <Card
-            id="rpc"
-            className="bg-[#1A1A1A] border border-[#2A2A2A] scroll-mt-8"
+              id="rpc"
+              className="bg-[#1A1A1A] border border-[#2A2A2A] scroll-mt-8"
           >
             <CardHeader>
               <CardTitle className="text-white">RPC API</CardTitle>
@@ -276,34 +279,34 @@ export default function Docs() {
   }'`}</code>
                     </pre>
                     <button
-                      onClick={() =>
-                        copyToClipboard(
-                          `curl https://sepolia-preconf.base.org -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["pending",true],"id":1}'`,
-                          "getBlock"
-                        )
-                      }
-                      className="absolute top-3 right-3 p-2 hover:bg-[#3A3A3A] rounded transition-colors"
+                        onClick={() =>
+                            copyToClipboard(
+                                `curl https://sepolia-preconf.base.org -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["pending",true],"id":1}'`,
+                                "getBlock"
+                            )
+                        }
+                        className="absolute top-3 right-3 p-2 hover:bg-[#3A3A3A] rounded transition-colors"
                     >
                       {copiedCommand === "getBlock" ? (
-                        <span className="text-green-500 text-sm">Copied!</span>
+                          <span className="text-green-500 text-sm">Copied!</span>
                       ) : (
-                        <Copy size={16} className="text-gray-400" />
+                          <Copy size={16} className="text-gray-400"/>
                       )}
                     </button>
                   </div>
                   <button
-                    onClick={() => setShowBlockResponse(!showBlockResponse)}
-                    className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mt-2"
+                      onClick={() => setShowBlockResponse(!showBlockResponse)}
+                      className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mt-2"
                   >
                     {showBlockResponse ? (
-                      <ChevronUp size={16} />
+                        <ChevronUp size={16}/>
                     ) : (
-                      <ChevronDown size={16} />
+                        <ChevronDown size={16}/>
                     )}
                     {showBlockResponse ? "Hide Response" : "Show Response"}
                   </button>
                   {showBlockResponse && (
-                    <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
+                      <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
                       <code className="text-sm text-white">{`{
   "jsonrpc": "2.0",
   "id": 1,
@@ -334,34 +337,34 @@ export default function Docs() {
   }'`}</code>
                     </pre>
                     <button
-                      onClick={() =>
-                        copyToClipboard(
-                          `curl https://sepolia-preconf.base.org -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_getTransactionReceipt","params":["0x..."],"id":1}'`,
-                          "getReceipt"
-                        )
-                      }
-                      className="absolute top-3 right-3 p-2 hover:bg-[#3A3A3A] rounded transition-colors"
+                        onClick={() =>
+                            copyToClipboard(
+                                `curl https://sepolia-preconf.base.org -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_getTransactionReceipt","params":["0x..."],"id":1}'`,
+                                "getReceipt"
+                            )
+                        }
+                        className="absolute top-3 right-3 p-2 hover:bg-[#3A3A3A] rounded transition-colors"
                     >
                       {copiedCommand === "getReceipt" ? (
-                        <span className="text-green-500 text-sm">Copied!</span>
+                          <span className="text-green-500 text-sm">Copied!</span>
                       ) : (
-                        <Copy size={16} className="text-gray-400" />
+                          <Copy size={16} className="text-gray-400"/>
                       )}
                     </button>
                   </div>
                   <button
-                    onClick={() => setShowReceiptResponse(!showReceiptResponse)}
-                    className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mt-2"
+                      onClick={() => setShowReceiptResponse(!showReceiptResponse)}
+                      className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mt-2"
                   >
                     {showReceiptResponse ? (
-                      <ChevronUp size={16} />
+                        <ChevronUp size={16}/>
                     ) : (
-                      <ChevronDown size={16} />
+                        <ChevronDown size={16}/>
                     )}
                     {showReceiptResponse ? "Hide Response" : "Show Response"}
                   </button>
                   {showReceiptResponse && (
-                    <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
+                      <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
                       <code className="text-sm text-white">{`{
   "jsonrpc": "2.0",
   "id": 1,
@@ -393,34 +396,34 @@ export default function Docs() {
   }'`}</code>
                     </pre>
                     <button
-                      onClick={() =>
-                        copyToClipboard(
-                          `curl https://sepolia-preconf.base.org -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_getBalance","params":["0x...","pending"],"id":1}'`,
-                          "getBalance"
-                        )
-                      }
-                      className="absolute top-3 right-3 p-2 hover:bg-[#3A3A3A] rounded transition-colors"
+                        onClick={() =>
+                            copyToClipboard(
+                                `curl https://sepolia-preconf.base.org -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_getBalance","params":["0x...","pending"],"id":1}'`,
+                                "getBalance"
+                            )
+                        }
+                        className="absolute top-3 right-3 p-2 hover:bg-[#3A3A3A] rounded transition-colors"
                     >
                       {copiedCommand === "getBalance" ? (
-                        <span className="text-green-500 text-sm">Copied!</span>
+                          <span className="text-green-500 text-sm">Copied!</span>
                       ) : (
-                        <Copy size={16} className="text-gray-400" />
+                          <Copy size={16} className="text-gray-400"/>
                       )}
                     </button>
                   </div>
                   <button
-                    onClick={() => setShowBalanceResponse(!showBalanceResponse)}
-                    className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mt-2"
+                      onClick={() => setShowBalanceResponse(!showBalanceResponse)}
+                      className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mt-2"
                   >
                     {showBalanceResponse ? (
-                      <ChevronUp size={16} />
+                        <ChevronUp size={16}/>
                     ) : (
-                      <ChevronDown size={16} />
+                        <ChevronDown size={16}/>
                     )}
                     {showBalanceResponse ? "Hide Response" : "Show Response"}
                   </button>
                   {showBalanceResponse && (
-                    <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
+                      <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
                       <code className="text-sm text-white">{`{
   "jsonrpc": "2.0",
   "id": 1,
@@ -433,6 +436,7 @@ export default function Docs() {
             </CardContent>
           </Card>
         </div>
+      </div>
       </div>
     </div>
   );
