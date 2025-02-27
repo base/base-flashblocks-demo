@@ -1,4 +1,4 @@
-import {SubBlock, truncateHash} from "@/utils/block-utils";
+import {sortByHighlighted, SubBlock, truncateHash} from "@/utils/block-utils";
 import {Card} from "@/components/ui/card";
 import {ChevronRight} from "lucide-react";
 
@@ -10,9 +10,9 @@ interface SubBlockCardProps {
 }
 
 export function SubBlockCard({blockId, subBlock, isPending, highlightTransactions}: SubBlockCardProps) {
-    if (subBlock.transactions.length > 1) {
-        console.log("DAN", highlightTransactions, subBlock.transactions);
-    }
+    const transactions = sortByHighlighted(subBlock.transactions, highlightTransactions);
+
+
     return (
         <Card className={`bg-[#1A1A1A] border-[#2A2A2A] ${isPending ? "border-l-[#0052FF]" : ""}`}>
             <div className="p-3">
@@ -23,7 +23,7 @@ export function SubBlockCard({blockId, subBlock, isPending, highlightTransaction
                     <div className="text-xs text-gray-500">{isPending ? "Confirmed" : ""}</div>
                 </div>
                 <div className="space-y-1">
-                    {subBlock.transactions.map((tx, index) => (
+                    {transactions.map((tx, index) => (
                         <div
                             key={index}
                             className={`flex justify-between items-center text-xs ${
