@@ -11,7 +11,7 @@ import { ChevronDown, ChevronUp, Copy } from "lucide-react";
 import {Header} from "@/components/header";
 
 const codeClasses = "bg-[#2A2A2A] px-2 py-1 rounded text-white text-sm";
-const textClasses = "text text-gray-400 font-light";
+const textClasses = "text text-[#c7c7c7] font-light";
 const titleClasses = "text-white";
 const subtitleClasses = "text-gray-400";
 const headerClasses = "font-semibold text-white text-lg";
@@ -109,8 +109,8 @@ export default function Docs() {
                     Interpreting the data
                   </h4>
                   <p className={textClasses}>
-                    To minimize the amount of data sent to clients, each Flashblock payload only includes the diff data from the previous block.
-                    The initial Flashblock in a block includes the block data and the subsequent Flashblocks only include the diff data (e.g. transactions that are present in that Flashblock).
+                    To minimize the amount of data sent to clients, each Flashblock only includes the diff data from the previous block.
+                    The initial Flashblock (when index is zero) includes the block properties (e.g. number, gas limit) and the subsequent Flashblocks only include the diff data (e.g. transactions that are present in that Flashblock).
                   </p>
                   <button
                       onClick={() => setShowIndex0Response(!showIndex0Response)}
@@ -305,7 +305,7 @@ export default function Docs() {
                   <h4 className={headerClasses}>
                     eth_getTransactionReceipt
                   </h4>
-                  <p>
+                  <p className={textClasses}>
                     TODO
                   </p>
                   <div className="relative">
@@ -364,7 +364,7 @@ export default function Docs() {
 
                 <div className="space-y-2">
                   <h4 className={headerClasses}>eth_getBalance</h4>
-                  <p className="text-sm text-gray-400">
+                  <p className={textClasses}>
                     Use the <code className="text-white">pending</code> tag
                   </p>
                   <div className="relative">
