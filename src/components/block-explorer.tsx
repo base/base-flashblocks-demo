@@ -6,7 +6,7 @@ import {Label} from "@/components/ui/label";
 import {NormalBlockList} from "./normal-block-list";
 import {FlashBlockList} from "./flash-block-list";
 import {useFlashblocks} from "@/hooks/useFlashblocks";
-import {injected, useAccount, useChainId, useConnect, useDisconnect, useSendTransaction} from "wagmi";
+import {injected, useAccount, useConnect, useDisconnect, useSendTransaction} from "wagmi";
 import {parseEther} from "viem";
 import Link from "next/link";
 import Image from "next/image";
