@@ -12,18 +12,17 @@ interface SubBlockCardProps {
 export function SubBlockCard({blockId, subBlock, isPending, highlightTransactions}: SubBlockCardProps) {
     const transactions = sortByHighlighted(subBlock.transactions, highlightTransactions);
 
-
     return (
         <Card className={`bg-[#1A1A1A] border-[#2A2A2A] ${isPending ? "border-l-[#0052FF]" : ""}`}>
-            <div className="p-3">
+            <div className="p-4 pt-5">
                 <div className="flex justify-between items-center mb-2">
-                    <div className="text-white text-sm font-bold">
+                    <div className="text-white font-bold">
                         Block {blockId}#{subBlock.blockNumber}
                     </div>
                     <div className="text-xs text-gray-500">{isPending ? "Confirmed" : ""}</div>
                 </div>
-                <div className="space-y-1">
-                    {transactions.map((tx, index) => (
+                <div className="text-xs space-y-3 pt-2">
+                    {transactions.slice(0, 5).map((tx, index) => (
                         <div
                             key={index}
                             className={`flex justify-between items-center text-xs ${
@@ -41,6 +40,7 @@ export function SubBlockCard({blockId, subBlock, isPending, highlightTransaction
                             <div className="text-grey-600">({(Number(tx.value) / 1e18).toFixed(4)} ETH)</div>
                         </div>
                     ))}
+                    {transactions.length > 5 && <div className="text-center text-gray-500">+ {transactions.length - 5} more transactions</div>}
                 </div>
             </div>
         </Card>
