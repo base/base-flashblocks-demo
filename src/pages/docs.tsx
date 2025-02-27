@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Copy } from "lucide-react";
+import {Header} from "@/components/header";
 
 export default function Docs() {
   const [showIndex0Response, setShowIndex0Response] = useState(false);
@@ -25,27 +26,20 @@ export default function Docs() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white">
+      <Header>
+        <Link href="/" className="bg-[#1A1A1A] py-2 px-4 rounded-full font-semibold">
+          Explorer
+        </Link>
+      </Header>
+
       <div className="container mx-auto p-8">
         <div className="space-y-6">
-          <Link
-            href="/"
-            className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 mb-6"
-          >
-            <span>←</span>
-            <span>Back</span>
-          </Link>
-
-          <h1 className="text-3xl font-bold tracking-tight">
-            Base Sepolia Flashblocks Developer Guide
-          </h1>
-
           {/* Overview Section */}
           <Card className="bg-[#1A1A1A] border border-[#2A2A2A]">
             <CardHeader>
-              <CardTitle className="text-white">Integration Methods</CardTitle>
+              <CardTitle className="text-white">Integrating Flashblocks</CardTitle>
               <CardDescription className="text-gray-400">
-                Choose how you want to receive Flashblocks data (Base Sepolia
-                Only)
+                Choose how you want to receive Flashblocks data
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -80,7 +74,7 @@ export default function Docs() {
             <CardHeader>
               <CardTitle className="text-white">WebSocket API</CardTitle>
               <CardDescription className="text-gray-400">
-                Real-time block updates via WebSocket connection
+                Stream realtime block updates over a WebSocket.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -88,7 +82,7 @@ export default function Docs() {
                 <p className="text-sm text-white">
                   Connect to:{" "}
                   <code className="bg-[#2A2A2A] px-2 py-1 rounded">
-                    sepolia.flashblocks.base.org
+                    wss://sepolia.flashblocks.base.org/ws
                   </code>
                 </p>
 
@@ -111,7 +105,7 @@ export default function Docs() {
                   <p className="text-sm text-gray-400 mb-2">Then connect:</p>
                   <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
                     <code className="text-sm text-white">
-                      websocat sepolia.flashblocks.base.org
+                      websocat wss://sepolia.flashblocks.base.org/ws
                     </code>
                   </pre>
                 </div>
@@ -271,7 +265,7 @@ export default function Docs() {
                   </p>
                   <div className="relative">
                     <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
-                      <code className="text-sm text-white">{`curl sepolia-preconf.base.org \\
+                      <code className="text-sm text-white">{`curl https://sepolia-preconf.base.org \\
   -X POST \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -284,7 +278,7 @@ export default function Docs() {
                     <button
                       onClick={() =>
                         copyToClipboard(
-                          `curl sepolia-preconf.base.org -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["pending",true],"id":1}'`,
+                          `curl https://sepolia-preconf.base.org -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["pending",true],"id":1}'`,
                           "getBlock"
                         )
                       }
@@ -329,7 +323,7 @@ export default function Docs() {
                   </h4>
                   <div className="relative">
                     <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
-                      <code className="text-sm text-white">{`curl sepolia-preconf.base.org \\
+                      <code className="text-sm text-white">{`curl https://sepolia-preconf.base.org \\
   -X POST \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -342,7 +336,7 @@ export default function Docs() {
                     <button
                       onClick={() =>
                         copyToClipboard(
-                          `curl sepolia-preconf.base.org -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_getTransactionReceipt","params":["0x..."],"id":1}'`,
+                          `curl https://sepolia-preconf.base.org -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_getTransactionReceipt","params":["0x..."],"id":1}'`,
                           "getReceipt"
                         )
                       }
@@ -388,7 +382,7 @@ export default function Docs() {
                   </p>
                   <div className="relative">
                     <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
-                      <code className="text-sm text-white">{`curl sepolia-preconf.base.org \\
+                      <code className="text-sm text-white">{`curl https://sepolia-preconf.base.org \\
   -X POST \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -401,7 +395,7 @@ export default function Docs() {
                     <button
                       onClick={() =>
                         copyToClipboard(
-                          `curl sepolia-preconf.base.org -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_getBalance","params":["0x...","pending"],"id":1}'`,
+                          `curl https://sepolia-preconf.base.org -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_getBalance","params":["0x...","pending"],"id":1}'`,
                           "getBalance"
                         )
                       }
