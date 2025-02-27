@@ -72,7 +72,7 @@ function AccountButton() {
 
 export function BlockExplorer() {
     const account = useAccount();
-    const [flashMode, setFlashMode] = useState(false);
+    const [flashMode, setFlashMode] = useState(true);
     const {blocks, pendingBlock} = useFlashblocks();
     const [txns, setTxns] = useState<Record<string, boolean>>({});
 

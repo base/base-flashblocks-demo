@@ -11,7 +11,7 @@ import { ChevronDown, ChevronUp, Copy } from "lucide-react";
 import {Header} from "@/components/header";
 
 const codeClasses = "bg-[#2A2A2A] px-2 py-1 rounded text-white text-sm";
-const textClasses = "text text-[#c7c7c7] font-light";
+const textClasses = "text text-[#c7c7c7] font-normal";
 const titleClasses = "text-white";
 const subtitleClasses = "text-gray-400";
 const headerClasses = "font-semibold text-white text-lg";
