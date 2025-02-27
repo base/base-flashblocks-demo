@@ -7,7 +7,7 @@ export function BlockCard({block, isNew, highlightTransactions}: {block: Block; 
 
     return (
         <Card key={block.blockNumber} className={`bg-[#1A1A1A] border-[#2A2A2A] hover:border-[#0052FF]/50} ${isNew ? "highlight" : ""}`}>
-            <div className="p-4">
+            <div className="p-4 pt-5">
                 <div className="flex justify-between items-center mb-3">
                     <div className="flex items-center gap-2">
                         <div className="text-white font-semibold">Block #{block.blockNumber}</div>
@@ -15,7 +15,7 @@ export function BlockCard({block, isNew, highlightTransactions}: {block: Block; 
                     </div>
                     <div className="text-sm text-gray-500">{getRelativeTime(block.timestamp)}</div>
                 </div>
-                <div className="space-y-2 text-xs">
+                <div className="text-xs space-y-3 pt-2">
                     {transactions.slice(0, 5).map((tx, index) => (
                         <div
                             key={index}
