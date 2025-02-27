@@ -6,17 +6,34 @@ import {Label} from "@/components/ui/label";
 import {NormalBlockList} from "./normal-block-list";
 import {FlashBlockList} from "./flash-block-list";
 import {useFlashblocks} from "@/hooks/useFlashblocks";
-import {injected, useAccount, useConnect, useDisconnect, useSendTransaction} from "wagmi";
+import {injected, useAccount, useChainId, useConnect, useDisconnect, useSendTransaction} from "wagmi";
 import {parseEther} from "viem";
 import Link from "next/link";
 import Image from "next/image";
 import {Header} from "@/components/header";
+import { useSwitchChain } from 'wagmi'
+import {baseSepolia} from "viem/chains";
 
 function SendTransaction({highlightTransactions}: {highlightTransactions: (txn: string) => void}) {
+    const { switchChain } = useSwitchChain()
+    const { chainId } = useAccount();
     const {isPending, sendTransaction} = useSendTransaction();
 
-    if (isPending) {
+    if (isPending || !chainId) {
         return <div>...</div>;
+    }
+
+    if (chainId !== baseSepolia.id) {
+        return (
+            <button
+                disabled={!sendTransaction}
+                onClick={() => {
+                    switchChain({chainId : baseSepolia.id})
+                }}
+                className="bg-[#0052FF] py-2 px-4 rounded-full font-semibold">
+                Switch Network
+            </button>
+        );
     }
 
     return (
