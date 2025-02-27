@@ -225,7 +225,7 @@ export default function Docs() {
               className="bg-[#1A1A1A] border border-[#2A2A2A] scroll-mt-8"
           >
             <CardHeader>
-              <CardTitle className={titleClasses}>RPC API (enabled Feb 28th)</CardTitle>
+              <CardTitle className={titleClasses}>RPC API</CardTitle>
               <CardDescription className={subtitleClasses}>
                 Flashblock aware RPC endpoint.
               </CardDescription>
