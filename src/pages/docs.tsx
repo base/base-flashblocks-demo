@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useState } from "react";
+import React, { useState } from "react";
 import { ChevronDown, ChevronUp, Copy } from "lucide-react";
 import {Header} from "@/components/header";
 
@@ -16,6 +16,17 @@ const titleClasses = "text-white";
 const subtitleClasses = "text-gray-400";
 const headerClasses = "font-semibold text-white text-lg";
 const linkClasses = "text-white hover:underline";
+
+const CodeBlock = ({children}: {children: React.ReactNode}) => {
+  return (
+      <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
+        <code className="text-sm text-white">
+          {children}
+        </code>
+      </pre>
+  )
+
+}
 
 export default function Docs() {
   const [showIndex0Response, setShowIndex0Response] = useState(false);
@@ -87,11 +98,9 @@ export default function Docs() {
                     Firstly install websocat, following <Link className={linkClasses} href="https://github.com/vi/websocat?tab=readme-ov-file#installation">these instructions.</Link>
                   </p>
                   <p className={textClasses}>From your terminal, you can then connect to the websocket stream by running:</p>
-                  <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
-                    <code className="text-sm text-white">
-                      websocat wss://sepolia.flashblocks.base.org/ws
-                    </code>
-                  </pre>
+                  <CodeBlock>
+                    websocat wss://sepolia.flashblocks.base.org/ws
+                  </CodeBlock>
                   <p className={textClasses}>In your terminal, you'll see a stream of all the Flashblocks being sent over the websocket connection.</p>
                 </div>
 
@@ -223,25 +232,20 @@ export default function Docs() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
-                <p className="text-sm text-white">
-                  Endpoint:{" "}
-                  <code className="bg-[#2A2A2A] px-2 py-1 rounded">
-                    sepolia-preconf.base.org
-                  </code>
+                <p className={textClasses}>
+                  You can use the Flashblocks aware RPC endpoint at <code className={codeClasses}>https://sepolia-preconf.base.org</code>
                 </p>
 
-                <div className="text-sm text-gray-400 p-4 bg-[#2A2A2A] rounded-lg">
-                  <strong className="text-white">Note:</strong> In addition to
-                  these flashblock-specific methods, all standard Ethereum
-                  JSON-RPC methods are supported as usual.
-                </div>
+                <p className={textClasses}>
+                  In addition to these flashblock-specific methods, all standard Ethereum JSON-RPC methods are supported as usual.
+                </p>
 
                 <div className="space-y-2">
                   <h4 className={headerClasses}>
                     eth_getBlockByNumber
                   </h4>
-                  <p className="text-sm text-gray-400">
-                    Use the <code className="text-white">pending</code> tag
+                  <p className={textClasses}>
+                    Use the <code className={codeClasses}>pending</code> tag to retrieve the latest Flashblock.
                   </p>
                   <div className="relative">
                     <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
@@ -301,6 +305,9 @@ export default function Docs() {
                   <h4 className={headerClasses}>
                     eth_getTransactionReceipt
                   </h4>
+                  <p>
+                    TODO
+                  </p>
                   <div className="relative">
                     <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
                       <code className="text-sm text-white">{`curl https://sepolia-preconf.base.org \\
