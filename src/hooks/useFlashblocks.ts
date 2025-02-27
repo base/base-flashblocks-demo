@@ -37,7 +37,6 @@ export function flashBlockToBlock(flashBlock: Flashblock): Block {
     const block: Block = {
         blockNumber: Number(flashBlock.base.block_number),
         timestamp: Number(flashBlock.base.timestamp),
-        transactions: [],
         subBlocks: [{
             blockNumber: 1,
             transactions: [],

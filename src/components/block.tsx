@@ -3,7 +3,7 @@ import {Card} from "@/components/ui/card";
 import {ChevronRight} from "lucide-react";
 
 export function BlockCard({block, isNew, highlightTransactions}: {block: Block; isNew: boolean; highlightTransactions: Record<string, boolean>}) {
-    const transactions = transactionsFor(block);
+    const transactions = transactionsFor(block, highlightTransactions);
 
     return (
         <Card key={block.blockNumber} className={`bg-[#1A1A1A] border-[#2A2A2A] hover:border-[#0052FF]/50} ${isNew ? "highlight" : ""}`}>
