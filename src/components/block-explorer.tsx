@@ -11,6 +11,7 @@ import {useAccount, useBalance, useDisconnect, useSendTransaction} from "wagmi";
 import {ConnectWallet, Wallet, WalletDefault} from "@coinbase/onchainkit/wallet";
 import {parseEther} from "viem";
 import Link from "next/link";
+import Image from "next/image";
 
 function SendTransaction({highlightTransactions}: {highlightTransactions: (txn: string) => void}) {
     const {isPending, sendTransaction} = useSendTransaction();
@@ -133,7 +134,7 @@ export function BlockExplorer() {
                                 className="data-[state=checked]:bg-[#0052FF]"
                             />
                             <Label htmlFor="flash-mode" className="text-sm cursor-pointer select-none">
-                                ⚡🤖
+                                <Image src="/flashblocks.svg" alt="Flashblocks Logo" width={25} height={25} />
                             </Label>
                         </div>
                     </div>
