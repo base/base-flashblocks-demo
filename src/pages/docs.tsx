@@ -10,6 +10,13 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, Copy } from "lucide-react";
 import {Header} from "@/components/header";
 
+const codeClasses = "bg-[#2A2A2A] px-2 py-1 rounded text-white text-sm";
+const textClasses = "text text-gray-400 font-light";
+const titleClasses = "text-white";
+const subtitleClasses = "text-gray-400";
+const headerClasses = "font-semibold text-white text-lg";
+const linkClasses = "text-white hover:underline";
+
 export default function Docs() {
   const [showIndex0Response, setShowIndex0Response] = useState(false);
   const [showIndexNResponse, setShowIndexNResponse] = useState(false);
@@ -37,32 +44,14 @@ export default function Docs() {
           {/* Overview Section */}
           <Card className="bg-[#1A1A1A] border border-[#2A2A2A]">
             <CardHeader>
-              <CardTitle className="text-white">Integrating Flashblocks</CardTitle>
-              <CardDescription className="text-gray-400">
-                Choose how you want to receive Flashblocks data
-              </CardDescription>
+              <CardTitle className={titleClasses}>Integrating Flashblocks</CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-2">
-                <li>
-                  <a
-                      href="#websocket"
-                      className="text-white hover:text-gray-400 transition-colors flex items-center gap-2"
-                  >
-                    WebSocket API
-                    <span className="text-xs text-gray-400">→</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                      href="#rpc"
-                      className="text-white hover:text-gray-400 transition-colors flex items-center gap-2"
-                  >
-                    RPC API
-                    <span className="text-xs text-gray-400">→</span>
-                  </a>
-                </li>
-              </ul>
+              <p className={textClasses}>
+                Flashblocks is enabled for developers on Base Sepolia. There are two ways you can integrate with
+                Flashblocks data. You can either use the WebSocket API to stream real-time block updates, or use the RPC
+                API to query the Flashblocks-aware RPC endpoint.
+              </p>
             </CardContent>
           </Card>
 
@@ -75,61 +64,55 @@ export default function Docs() {
               className="bg-[#1A1A1A] border border-[#2A2A2A] scroll-mt-8"
           >
             <CardHeader>
-              <CardTitle className="text-white">WebSocket API</CardTitle>
-              <CardDescription className="text-gray-400">
+              <CardTitle className={titleClasses}>WebSocket API</CardTitle>
+              <CardDescription className={subtitleClasses}>
                 Stream realtime block updates over a WebSocket.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
-                <p className="text-sm text-white">
-                  Connect to:{" "}
-                  <code className="bg-[#2A2A2A] px-2 py-1 rounded">
-                    wss://sepolia.flashblocks.base.org/ws
-                  </code>
+                <p className={textClasses}>
+                  You can connect to the websocket endpoint with any WebSocket library of CLI tool. The endpoint is available
+                  at <code className={codeClasses}>wss://sepolia.flashblocks.base.org/ws</code>.
+                </p>
+
+                <p className={textClasses}>
+                  Two recommended tools for connecting to the WebSocket endpoint are <Link className={linkClasses} href="https://github.com/vi/websocat">Websocat</Link> and
+                  the <Link className={linkClasses} href="https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_client_applications">Javascript Websocket Client</Link>.
                 </p>
 
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-white">Example Request:</h4>
-                  <p className="text-sm text-gray-400 mb-2">
-                    First install websocat:
+                  <h4 className={headerClasses}>Websocat Example</h4>
+                  <p className={textClasses}>
+                    Firstly install websocat, following <Link className={linkClasses} href="https://github.com/vi/websocat?tab=readme-ov-file#installation">these instructions.</Link>
                   </p>
-                  <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto mb-4">
-                    <code className="text-sm text-white">
-                      brew install websocat # macOS
-                    </code>
-                  </pre>
-                  <p className="text-sm text-gray-400 mb-2">OR</p>
-                  <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto mb-4">
-                    <code className="text-sm text-white">
-                      sudo apt-get install websocat # Ubuntu/Debian
-                    </code>
-                  </pre>
-                  <p className="text-sm text-gray-400 mb-2">Then connect:</p>
+                  <p className={textClasses}>From your terminal, you can then connect to the websocket stream by running:</p>
                   <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
                     <code className="text-sm text-white">
                       websocat wss://sepolia.flashblocks.base.org/ws
                     </code>
                   </pre>
+                  <p className={textClasses}>In your terminal, you'll see a stream of all the Flashblocks being sent over the websocket connection.</p>
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-white">
-                    Example Response (index 0):
+                  <h4 className={headerClasses}>
+                    Interpreting the data
                   </h4>
-                  <p className="text-sm text-gray-400 mb-2">
-                    First payload includes base block data
+                  <p className={textClasses}>
+                    To minimize the amount of data sent to clients, each Flashblock payload only includes the diff data from the previous block.
+                    The initial Flashblock in a block includes the block data and the subsequent Flashblocks only include the diff data (e.g. transactions that are present in that Flashblock).
                   </p>
                   <button
                       onClick={() => setShowIndex0Response(!showIndex0Response)}
-                      className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-2"
+                      className="flex items-center gap-2 pt-2 text-sm text-gray-400 hover:text-white transition-colors mb-2"
                   >
                     {showIndex0Response ? (
                         <ChevronUp size={16}/>
                     ) : (
                         <ChevronDown size={16}/>
                     )}
-                    {showIndex0Response ? "Hide Response" : "Show Response"}
+                    {showIndex0Response ? "Example Initial Response" : "Example Initial Response"}
                   </button>
                   {showIndex0Response && (
                       <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
@@ -177,12 +160,6 @@ export default function Docs() {
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-white">
-                    Example Response (index &gt; 0):
-                  </h4>
-                  <p className="text-sm text-gray-400 mb-2">
-                    Subsequent payloads only include diff data
-                  </p>
                   <button
                       onClick={() => setShowIndexNResponse(!showIndexNResponse)}
                       className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-2"
@@ -192,7 +169,7 @@ export default function Docs() {
                     ) : (
                         <ChevronDown size={16}/>
                     )}
-                    {showIndexNResponse ? "Hide Response" : "Show Response"}
+                    {showIndexNResponse ? "Example Diff Response" : "Example Diff Response"}
                   </button>
                   {showIndexNResponse && (
                       <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
@@ -239,9 +216,9 @@ export default function Docs() {
               className="bg-[#1A1A1A] border border-[#2A2A2A] scroll-mt-8"
           >
             <CardHeader>
-              <CardTitle className="text-white">RPC API</CardTitle>
-              <CardDescription className="text-gray-400">
-                HTTP RPC endpoint for querying flashblock/preconf data.
+              <CardTitle className={titleClasses}>RPC API</CardTitle>
+              <CardDescription className={subtitleClasses}>
+                Flashblock aware RPC endpoint.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -260,7 +237,7 @@ export default function Docs() {
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-white">
+                  <h4 className={headerClasses}>
                     eth_getBlockByNumber
                   </h4>
                   <p className="text-sm text-gray-400">
@@ -321,7 +298,7 @@ export default function Docs() {
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-white">
+                  <h4 className={headerClasses}>
                     eth_getTransactionReceipt
                   </h4>
                   <div className="relative">
@@ -379,7 +356,7 @@ export default function Docs() {
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-white">eth_getBalance</h4>
+                  <h4 className={headerClasses}>eth_getBalance</h4>
                   <p className="text-sm text-gray-400">
                     Use the <code className="text-white">pending</code> tag
                   </p>
