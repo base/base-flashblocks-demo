@@ -111,8 +111,8 @@ export function BlockExplorer() {
     return (
         <div className="min-h-screen bg-[#0A0A0A] text-white">
             <Header>
-                <Link href="/docs" className="bg-[#1A1A1A] py-2 px-4 rounded-full font-semibold">
-                    Docs
+                <Link href="/docs" className="bg-[#515151] py-2 px-4 rounded-full font-semibold">
+                    Start Building
                 </Link>
                 <AccountButton />
                 {sendTransactionButton()}
