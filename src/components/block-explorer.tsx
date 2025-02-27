@@ -8,7 +8,7 @@ import {NormalBlockList} from "./normal-block-list";
 import {FlashBlockList} from "./flash-block-list";
 import {useFlashblocks} from "@/hooks/useFlashblocks";
 import {useAccount, useBalance, useDisconnect, useSendTransaction} from "wagmi";
-import {WalletDefault} from "@coinbase/onchainkit/wallet";
+import {ConnectWallet, Wallet, WalletDefault} from "@coinbase/onchainkit/wallet";
 import {parseEther} from "viem";
 import Link from "next/link";
 
@@ -37,10 +37,12 @@ function SendTransaction({highlightTransactions}: {highlightTransactions: (txn: 
                             },
                         }
                     );
-                }}>
-                Send
+                }}
+                className="bg-[#2A2A2A] py-3 px-4 rounded font-semibold">
+                Try flashblocks
             </button>
             <button
+                className="bg-[#2A2A2A] py-3 px-4 rounded font-semibold"
                 onClick={() => {
                     disconnect();
                 }}>
@@ -91,7 +93,11 @@ export function BlockExplorer() {
                 />
             );
         } else {
-            return <WalletDefault />;
+            return (
+                <Wallet className="bg-[#2A2A2A] rounded">
+                    <ConnectWallet />
+                </Wallet>
+            );
         }
     };
 
@@ -101,14 +107,14 @@ export function BlockExplorer() {
                 <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-8">
                         <img src="/Base_Wordmark_White.svg" alt="Base" className="h-6" />
-                    </div>
-                    <div className="flex items-center gap-8">
                         <Link href="/docs" className="text-xl font-bold hover:text-[#0052FF] transition-colors">
                             docs
                         </Link>
                     </div>
-                    {balance.data?.formatted && <p>{balance.data?.formatted.slice(0, 5)} ETH</p>}
-                    {menuButton()}
+                    <div className="flex items-center gap-8">
+                        {menuButton()}
+                        {balance.data?.formatted && <p className="text-l font-bold">{balance.data?.formatted.slice(0, 5)} ETH</p>}
+                    </div>
                 </div>
             </nav>
 
@@ -118,11 +124,18 @@ export function BlockExplorer() {
                         <Terminal className="w-5 h-5 text-[#0052FF]" />
                         <h1 className="text-xl font-bold">Live Blocks</h1>
                     </div>
-                    <div className="flex items-center gap-3 bg-[#1A1A1A] px-3 py-2 rounded-full">
-                        <Switch id="flash-mode" checked={flashMode} onCheckedChange={setFlashMode} className="data-[state=checked]:bg-[#0052FF]" />
-                        <Label htmlFor="flash-mode" className="text-sm cursor-pointer select-none">
-                            ⚡🤖
-                        </Label>
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3 bg-[#1A1A1A] px-3 py-2 rounded-full">
+                            <Switch
+                                id="flash-mode"
+                                checked={flashMode}
+                                onCheckedChange={setFlashMode}
+                                className="data-[state=checked]:bg-[#0052FF]"
+                            />
+                            <Label htmlFor="flash-mode" className="text-sm cursor-pointer select-none">
+                                ⚡🤖
+                            </Label>
+                        </div>
                     </div>
                 </div>
                 {blockList()}
