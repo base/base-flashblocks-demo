@@ -101,7 +101,7 @@ export default function Docs() {
                   <CodeBlock>
                     websocat wss://sepolia.flashblocks.base.org/ws
                   </CodeBlock>
-                  <p className={textClasses}>In your terminal, you'll see a stream of all the Flashblocks being sent over the websocket connection.</p>
+                  <p className={textClasses}>In your terminal, you&apos;ll see a stream of all the Flashblocks being sent over the websocket connection.</p>
                 </div>
 
                 <div className="space-y-2">
