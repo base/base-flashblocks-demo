@@ -306,7 +306,7 @@ export default function Docs() {
                     eth_getTransactionReceipt
                   </h4>
                   <p className={textClasses}>
-                    TODO
+                    Use the existing receipt RPC to get preconfirmed receipts
                   </p>
                   <div className="relative">
                     <pre className="bg-[#2A2A2A] p-4 rounded-lg overflow-x-auto">
