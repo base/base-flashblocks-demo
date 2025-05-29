@@ -1,8 +1,8 @@
-import {useEffect, useState} from 'react';
-import {Block, SubBlock} from "@/utils/block-utils";
-import {parseTransaction} from 'viem/op-stack';
-import {OpStackTransactionSerialized} from "viem/chains";
-import {keccak256, TransactionRequestBase} from "viem";
+import { useEffect, useState } from 'react';
+import { Block, SubBlock } from "@/utils/block-utils";
+import { parseTransaction } from 'viem/op-stack';
+import { OpStackTransactionSerialized } from "viem/chains";
+import { keccak256, TransactionRequestBase } from "viem";
 
 interface Flashblock {
     payload_id: string;
@@ -44,7 +44,7 @@ export function flashBlockToBlock(flashBlock: Flashblock): Block {
         }],
     };
 
-    flashBlock.diff.transactions.map((t ) => {
+    flashBlock.diff.transactions.map((t) => {
         const tx = parseTransaction(t as OpStackTransactionSerialized) as TransactionRequestBase;
         block.subBlocks[0].transactions.push({
             hash: keccak256(t as `0x{string}`),
@@ -67,7 +67,7 @@ function updateBlock(block: Block, flashBlock: Flashblock): Block {
     };
 
     flashBlock.diff.transactions.map((t) => {
-        const tx = parseTransaction(t as OpStackTransactionSerialized) ;
+        const tx = parseTransaction(t as OpStackTransactionSerialized);
         newSubBlock.transactions.push({
             hash: keccak256(t as `0x{string}`),
             from: "",
@@ -96,11 +96,20 @@ const clamp = (data: Block[]): Block[] => {
     return data;
 }
 
-export const useFlashblocks = (): State => {
-    const url = process.env.NEXT_PUBLIC_WEBSOCKET_URL
-    if (!url) {
-        throw new Error("No websocket URL provided");
-    }
+export const useFlashblocks = (network: string): State => {
+    const getWebsocketUrl = (network: string) => {
+        switch (network) {
+            case 'sepolia':
+                return "wss://flashbots-base-sepolia.flashbots.net";
+            case 'mainnet':
+                // TODO: Replace with actual mainnet URL when available
+                return "wss://flashbots-base-mainnet.flashbots.net";
+            default:
+                return "wss://flashbots-base-sepolia.flashbots.net";
+        }
+    };
+
+    const url = getWebsocketUrl(network);
 
     const [state, setState] = useState<State>({
         blocks: [],
