@@ -1,23 +1,23 @@
 "use client";
 
-import {useState} from "react";
-import {Switch} from "@/components/ui/switch";
-import {Label} from "@/components/ui/label";
-import {NormalBlockList} from "./normal-block-list";
-import {FlashBlockList} from "./flash-block-list";
-import {useFlashblocks} from "@/hooks/useFlashblocks";
-import {injected, useAccount, useConnect, useDisconnect, useSendTransaction} from "wagmi";
-import {parseEther} from "viem";
+import { useState } from "react";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { NormalBlockList } from "./normal-block-list";
+import { FlashBlockList } from "./flash-block-list";
+import { useFlashblocks } from "@/hooks/useFlashblocks";
+import { injected, useAccount, useConnect, useDisconnect, useSendTransaction } from "wagmi";
+import { parseEther } from "viem";
 import Link from "next/link";
 import Image from "next/image";
-import {Header} from "@/components/header";
+import { Header } from "@/components/header";
 import { useSwitchChain } from 'wagmi'
-import {baseSepolia} from "viem/chains";
+import { baseSepolia } from "viem/chains";
 
-function SendTransaction({highlightTransactions}: {highlightTransactions: (txn: string) => void}) {
+function SendTransaction({ highlightTransactions }: { highlightTransactions: (txn: string) => void }) {
     const { switchChain } = useSwitchChain()
     const { chainId } = useAccount();
-    const {isPending, sendTransaction} = useSendTransaction();
+    const { isPending, sendTransaction } = useSendTransaction();
 
     if (isPending || !chainId) {
         return <div>...</div>;
@@ -28,7 +28,7 @@ function SendTransaction({highlightTransactions}: {highlightTransactions: (txn: 
             <button
                 disabled={!sendTransaction}
                 onClick={() => {
-                    switchChain({chainId : baseSepolia.id})
+                    switchChain({ chainId: baseSepolia.id })
                 }}
                 className="bg-[#0052FF] py-2 px-4 rounded-full font-semibold">
                 Switch Network
@@ -37,30 +37,30 @@ function SendTransaction({highlightTransactions}: {highlightTransactions: (txn: 
     }
 
     return (
-            <button
-                disabled={!sendTransaction}
-                onClick={() => {
-                    sendTransaction(
-                        {
-                            to: "0x557BB85Fc501616668D39d82AaA9B25027e9e296",
-                            value: parseEther("0.0001"),
+        <button
+            disabled={!sendTransaction}
+            onClick={() => {
+                sendTransaction(
+                    {
+                        to: "0x557BB85Fc501616668D39d82AaA9B25027e9e296",
+                        value: parseEther("0.0001"),
+                    },
+                    {
+                        onSuccess: hash => {
+                            highlightTransactions(hash);
                         },
-                        {
-                            onSuccess: hash => {
-                                highlightTransactions(hash);
-                            },
-                        }
-                    );
-                }}
-                className="bg-[#0052FF] py-2 px-4 rounded-full font-semibold">
-                Send Transaction
-            </button>
+                    }
+                );
+            }}
+            className="bg-[#0052FF] py-2 px-4 rounded-full font-semibold">
+            Send Transaction
+        </button>
     );
 }
 
 function AccountButton() {
-    const {isConnected } = useAccount()
-    const { connect} = useConnect()
+    const { isConnected } = useAccount()
+    const { connect } = useConnect()
     const { disconnect } = useDisconnect()
 
     if (isConnected) {
@@ -73,22 +73,23 @@ function AccountButton() {
 export function BlockExplorer() {
     const account = useAccount();
     const [flashMode, setFlashMode] = useState(true);
-    const {blocks, pendingBlock} = useFlashblocks();
+    const { blocks, pendingBlock } = useFlashblocks('sepolia');
     const [txns, setTxns] = useState<Record<string, boolean>>({});
+    const [selectedNetwork, setSelectedNetwork] = useState('sepolia');
 
     const blockList = () => {
-            return (
-                <div className={`grid ${flashMode ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"} gap-6`}>
-                    <div>
-                        <h1 className="text-xl font-bold">Blocks</h1>
-                        <NormalBlockList blocks={blocks} highlightTransactions={txns} />
-                    </div>
-                    {flashMode && <div>
-                        <h1 className="text-xl font-bold">Flashblocks</h1>
-                        <FlashBlockList blocks={blocks} pendingBlock={pendingBlock} showFlashBlocks={true} highlightTransactions={txns} />
-                    </div>}
+        return (
+            <div className={`grid ${flashMode ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"} gap-6`}>
+                <div>
+                    <h1 className="text-xl font-bold">Blocks</h1>
+                    <NormalBlockList blocks={blocks} highlightTransactions={txns} />
                 </div>
-            );
+                {flashMode && <div>
+                    <h1 className="text-xl font-bold">Flashblocks</h1>
+                    <FlashBlockList blocks={blocks} pendingBlock={pendingBlock} showFlashBlocks={true} highlightTransactions={txns} />
+                </div>}
+            </div>
+        );
     };
 
     const sendTransactionButton = () => {
@@ -100,7 +101,7 @@ export function BlockExplorer() {
                             if (txns[txn]) {
                                 return txns;
                             }
-                            return {...txns, [txn]: true};
+                            return { ...txns, [txn]: true };
                         });
                     }}
                 />
@@ -114,6 +115,16 @@ export function BlockExplorer() {
                 <Link href="/docs" className="bg-[#515151] py-2 px-4 rounded-full font-semibold">
                     Start Building
                 </Link>
+                <select
+                    value={selectedNetwork}
+                    onChange={(e) => setSelectedNetwork(e.target.value)}
+                    className="bg-[#1A1A1A] py-2 px-4 rounded-full font-semibold text-white"
+                >
+                    <option value="sepolia">Base Sepolia</option>
+                    <option value="mainnet" disabled className="text-gray-500">
+                        Base Mainnet (Coming Soon)
+                    </option>
+                </select>
                 <AccountButton />
                 {sendTransactionButton()}
                 <div className="flex items-center gap-3 bg-[#1A1A1A] px-2 py-2 rounded-full">
