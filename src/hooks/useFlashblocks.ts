@@ -1,8 +1,10 @@
-import {useEffect, useState} from 'react';
-import {Block, SubBlock} from "@/utils/block-utils";
-import {parseTransaction} from 'viem/op-stack';
-import {OpStackTransactionSerialized} from "viem/chains";
-import {keccak256, TransactionRequestBase} from "viem";
+import { useEffect, useState } from 'react';
+import { Block, SubBlock } from "@/utils/block-utils";
+import { parseTransaction } from 'viem/op-stack';
+import { OpStackTransactionSerialized } from "viem/chains";
+import { keccak256, TransactionRequestBase } from "viem";
+import brotliPromise from 'brotli-dec-wasm';
+
 
 interface Flashblock {
     payload_id: string;
@@ -44,7 +46,7 @@ export function flashBlockToBlock(flashBlock: Flashblock): Block {
         }],
     };
 
-    flashBlock.diff.transactions.map((t ) => {
+    flashBlock.diff.transactions.map((t) => {
         const tx = parseTransaction(t as OpStackTransactionSerialized) as TransactionRequestBase;
         block.subBlocks[0].transactions.push({
             hash: keccak256(t as `0x{string}`),
@@ -67,7 +69,7 @@ function updateBlock(block: Block, flashBlock: Flashblock): Block {
     };
 
     flashBlock.diff.transactions.map((t) => {
-        const tx = parseTransaction(t as OpStackTransactionSerialized) ;
+        const tx = parseTransaction(t as OpStackTransactionSerialized);
         newSubBlock.transactions.push({
             hash: keccak256(t as `0x{string}`),
             from: "",
@@ -110,8 +112,23 @@ export const useFlashblocks = (): State => {
     useEffect(() => {
         const ws = new WebSocket(url);
 
-        ws.onmessage = async (event) => {
-            const newFlashBlock: Flashblock = JSON.parse(await event.data.text());
+        ws.onmessage = async (event: MessageEvent<Blob>) => {
+            const brotli = await brotliPromise;
+            const textData = await event.data.text()
+            let newFlashBlock: Flashblock | undefined;
+            if (textData.trim().startsWith("{")) {
+                newFlashBlock = JSON.parse(textData) as Flashblock;
+            } else {
+                try {
+                    const u8Data = await event.data.bytes()
+                    const decompressedData = Buffer.from(brotli.decompress(u8Data)).toString("utf-8")
+                    newFlashBlock = JSON.parse(decompressedData) as Flashblock;
+                    console.log({ newFlashBlock })
+                } catch (decompressError) {
+                    console.error("Error decompressing data", decompressError)
+                    return
+                }
+            }
 
             setState((state) => {
                 const { blocks, pendingBlock } = state;
