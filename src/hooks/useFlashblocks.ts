@@ -123,7 +123,6 @@ export const useFlashblocks = (): State => {
                     const u8Data = await event.data.bytes()
                     const decompressedData = Buffer.from(brotli.decompress(u8Data)).toString("utf-8")
                     newFlashBlock = JSON.parse(decompressedData) as Flashblock;
-                    console.log({ newFlashBlock })
                 } catch (decompressError) {
                     console.error("Error decompressing data", decompressError)
                     return
