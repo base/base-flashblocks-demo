@@ -120,7 +120,8 @@ export const useFlashblocks = (): State => {
                 newFlashBlock = JSON.parse(textData) as Flashblock;
             } else {
                 try {
-                    const u8Data = await event.data.bytes()
+                    const arrayBuffer = await event.data.arrayBuffer()
+                    const u8Data = new Uint8Array(arrayBuffer)
                     const decompressedData = Buffer.from(brotli.decompress(u8Data)).toString("utf-8")
                     newFlashBlock = JSON.parse(decompressedData) as Flashblock;
                 } catch (decompressError) {
