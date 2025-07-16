@@ -1,6 +1,6 @@
 "use client";
 
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {Switch} from "@/components/ui/switch";
 import {Label} from "@/components/ui/label";
 import {NormalBlockList} from "./normal-block-list";
@@ -12,23 +12,28 @@ import Link from "next/link";
 import Image from "next/image";
 import {Header} from "@/components/header";
 import { useSwitchChain } from 'wagmi'
-import {baseSepolia} from "viem/chains";
+import {baseSepolia, base} from "viem/chains";
+import {useNetwork} from "@/contexts/network-context";
+import {NetworkSelector} from "@/components/network-selector";
 
 function SendTransaction({highlightTransactions}: {highlightTransactions: (txn: string) => void}) {
     const { switchChain } = useSwitchChain()
     const { chainId } = useAccount();
+    const { selectedNetwork } = useNetwork();
     const {isPending, sendTransaction} = useSendTransaction();
+
+    const targetChain = selectedNetwork === 'mainnet' ? base : baseSepolia;
 
     if (isPending || !chainId) {
         return <div>...</div>;
     }
 
-    if (chainId !== baseSepolia.id) {
+    if (chainId !== targetChain.id) {
         return (
             <button
                 disabled={!sendTransaction}
                 onClick={() => {
-                    switchChain({chainId : baseSepolia.id})
+                    switchChain({chainId : targetChain.id})
                 }}
                 className="bg-[#0052FF] py-2 px-4 rounded-full font-semibold">
                 Switch Network
@@ -73,7 +78,8 @@ function AccountButton() {
 export function BlockExplorer() {
     const account = useAccount();
     const [flashMode, setFlashMode] = useState(true);
-    const {blocks, pendingBlock} = useFlashblocks();
+    const { selectedNetwork, setSelectedNetwork, websocketUrl } = useNetwork();
+    const {blocks, pendingBlock} = useFlashblocks(websocketUrl);
     const [txns, setTxns] = useState<Record<string, boolean>>({});
 
     const blockList = () => {
@@ -111,6 +117,10 @@ export function BlockExplorer() {
     return (
         <div className="min-h-screen bg-[#0A0A0A] text-white">
             <Header>
+                <NetworkSelector 
+                    selectedNetwork={selectedNetwork}
+                    onNetworkChange={setSelectedNetwork}
+                />
                 <Link href="/docs" className="bg-[#515151] py-2 px-4 rounded-full font-semibold">
                     Start Building
                 </Link>
