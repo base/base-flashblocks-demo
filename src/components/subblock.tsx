@@ -1,6 +1,6 @@
-import {sortByHighlighted, SubBlock, truncateHash} from "@/utils/block-utils";
-import {Card} from "@/components/ui/card";
-import {ChevronRight} from "lucide-react";
+import { sortByHighlighted, SubBlock, truncateHash } from "@/utils/block-utils";
+import { Card } from "@/components/ui/card";
+import { ChevronRight } from "lucide-react";
 
 interface SubBlockCardProps {
     blockId: number;
@@ -9,11 +9,11 @@ interface SubBlockCardProps {
     highlightTransactions: Record<string, boolean>;
 }
 
-export function SubBlockCard({blockId, subBlock, isPending, highlightTransactions}: SubBlockCardProps) {
+export function SubBlockCard({ blockId, subBlock, isPending, highlightTransactions }: SubBlockCardProps) {
     const transactions = sortByHighlighted(subBlock.transactions, highlightTransactions);
 
     return (
-        <Card className={`bg-white border-gray-200 shadow-sm ${isPending ? "border-l-blue-600" : ""}`}>
+        <Card className={`bg-white border-gray-200 shadow-sm ${isPending ? "border-l-baseblue" : ""}`}>
             <div className="p-4 pt-5">
                 <div className="flex justify-between items-center mb-2">
                     <div className="text-black font-bold">
@@ -25,9 +25,8 @@ export function SubBlockCard({blockId, subBlock, isPending, highlightTransaction
                     {transactions.slice(0, 5).map((tx, index) => (
                         <div
                             key={index}
-                            className={`flex justify-between items-center text-xs ${
-                                highlightTransactions[tx.hash] ? "text-red-600" : "text-gray-700"
-                            } hover:text-gray-900`}>
+                            className={`flex justify-between items-center text-xs ${highlightTransactions[tx.hash] ? "text-red-600" : "text-gray-700"
+                                } hover:text-gray-900`}>
                             <div className="flex items-center gap-1">
                                 <span>{truncateHash(tx.from)}</span>
                                 {tx.to && (
