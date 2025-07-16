@@ -12,7 +12,7 @@ interface FlashBlockListProps {
 export function FlashBlockList({ blocks, pendingBlock, showFlashBlocks, highlightTransactions }: FlashBlockListProps) {
   return (
     <div className="space-y-6 relative">
-      <div className="absolute -left-4 top-0 bottom-0 w-px bg-gradient-to-b from-[#0052FF] to-transparent opacity-50" />
+      <div className="absolute -left-4 top-0 bottom-0 w-px bg-gradient-to-b from-blue-600 to-transparent opacity-50" />
 
       {showFlashBlocks && pendingBlock && (
         <div className="space-y-2">
