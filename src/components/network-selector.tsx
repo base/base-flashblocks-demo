@@ -17,7 +17,7 @@ const networks = [
 
 export function NetworkSelector({ selectedNetwork, onNetworkChange }: NetworkSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const selectedNetworkInfo = networks.find(n => n.id === selectedNetwork);
 
   return (
@@ -33,8 +33,8 @@ export function NetworkSelector({ selectedNetwork, onNetworkChange }: NetworkSel
 
       {isOpen && (
         <>
-          <div 
-            className="fixed inset-0 z-10" 
+          <div
+            className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           />
           <div className="absolute top-full mt-2 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[160px]">
@@ -45,9 +45,8 @@ export function NetworkSelector({ selectedNetwork, onNetworkChange }: NetworkSel
                   onNetworkChange(network.id);
                   setIsOpen(false);
                 }}
-                className={`w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-3 first:rounded-t-lg last:rounded-b-lg text-black ${
-                  selectedNetwork === network.id ? 'bg-blue-50 text-blue-600' : ''
-                }`}
+                className={`w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-3 first:rounded-t-lg last:rounded-b-lg text-black ${selectedNetwork === network.id ? 'bg-blue-50 text-baseblue' : ''
+                  }`}
               >
                 <span>{network.icon}</span>
                 <span className="text-sm">{network.name}</span>
