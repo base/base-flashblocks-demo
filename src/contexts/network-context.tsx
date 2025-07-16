@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 import { createConfig, http, WagmiProvider } from "wagmi";
 import { baseSepolia, base } from "viem/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -38,14 +38,15 @@ const networkConfigs = {
 };
 
 export function NetworkProvider({ children }: { children: ReactNode }) {
-  const [selectedNetwork, setSelectedNetwork] = useState<Network>('sepolia');
+  const [selectedNetwork, setSelectedNetwork] = useState<Network>('mainnet');
   
   const currentConfig = networkConfigs[selectedNetwork];
   
   const wagmiConfig = createConfig({
-    chains: [currentConfig.chain],
+    chains: [base, baseSepolia],
     transports: {
-      [currentConfig.chain.id]: http(),
+      [base.id]: http(),
+      [baseSepolia.id]: http(),
     },
   });
 

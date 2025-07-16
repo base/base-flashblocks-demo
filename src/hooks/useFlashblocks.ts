@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Block, SubBlock, Transaction} from "@/utils/block-utils";
+import { Block, SubBlock } from "@/utils/block-utils";
 import {parseTransaction} from 'viem/op-stack';
 import {OpStackTransactionSerialized} from "viem/chains";
 import {keccak256, TransactionRequestBase} from "viem";
