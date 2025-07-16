@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Block, SubBlock } from "@/utils/block-utils";
-import { parseTransaction } from 'viem/op-stack';
-import { OpStackTransactionSerialized } from "viem/chains";
-import { keccak256, TransactionRequestBase } from "viem";
+import {parseTransaction} from 'viem/op-stack';
+import {OpStackTransactionSerialized} from "viem/chains";
+import {keccak256, TransactionRequestBase} from "viem";
 import brotliPromise from 'brotli-dec-wasm';
 
 
@@ -34,7 +34,6 @@ interface Flashblock {
 }
 
 
-
 export function flashBlockToBlock(flashBlock: Flashblock): Block {
     const block: Block = {
         blockNumber: Number(flashBlock.base.block_number),
@@ -46,19 +45,27 @@ export function flashBlockToBlock(flashBlock: Flashblock): Block {
         }],
     };
 
-    flashBlock.diff.transactions.map((t) => {
-        const tx = parseTransaction(t as OpStackTransactionSerialized) as TransactionRequestBase;
-        block.subBlocks[0].transactions.push({
-            hash: keccak256(t as `0x{string}`),
-            from: tx.from || "",
-            to: tx.to || "",
-            value: tx.value ? tx.value : BigInt(0),
-        });
-    });
-
-    block.subBlocks[0].transactionHashes = Object.keys(flashBlock.metadata.receipts);
-
+    convertBlock(flashBlock, block.subBlocks[0]);
     return block;
+}
+
+function convertBlock(flashblock: Flashblock, subBlock: SubBlock) {
+    for (const t of flashblock.diff.transactions) {
+        try {
+            const tx = parseTransaction(t as OpStackTransactionSerialized) as TransactionRequestBase;
+            subBlock.transactions.push({
+                hash: keccak256(t as `0x{string}`),
+                from: tx.from || "",
+                to: tx.to || "",
+                value: tx.value ? tx.value : BigInt(0),
+            });
+        } catch (e) {
+            // Don't crash on parse failures
+            console.error(e);
+        }
+    }
+
+    subBlock.transactionHashes = Object.keys(flashblock.metadata.receipts);
 }
 
 function updateBlock(block: Block, flashBlock: Flashblock): Block {
@@ -68,18 +75,7 @@ function updateBlock(block: Block, flashBlock: Flashblock): Block {
         transactionHashes: [],
     };
 
-    flashBlock.diff.transactions.map((t) => {
-        const tx = parseTransaction(t as OpStackTransactionSerialized);
-        newSubBlock.transactions.push({
-            hash: keccak256(t as `0x{string}`),
-            from: "",
-            to: tx.to || "",
-            value: tx.value ? tx.value : BigInt(0),
-        });
-    })
-
-    newSubBlock.transactionHashes = Object.keys(flashBlock.metadata.receipts);
-
+    convertBlock(flashBlock, newSubBlock);
     return {
         ...block,
         subBlocks: [...block.subBlocks, newSubBlock],
@@ -98,9 +94,8 @@ const clamp = (data: Block[]): Block[] => {
     return data;
 }
 
-export const useFlashblocks = (): State => {
-    const url = process.env.NEXT_PUBLIC_WEBSOCKET_URL
-    if (!url) {
+export const useFlashblocks = (websocketUrl: string): State => {
+    if (!websocketUrl) {
         throw new Error("No websocket URL provided");
     }
 
@@ -110,7 +105,14 @@ export const useFlashblocks = (): State => {
     });
 
     useEffect(() => {
-        const ws = new WebSocket(url);
+        setState({
+            blocks: [],
+            pendingBlock: undefined,
+        });
+    }, [websocketUrl]);
+
+    useEffect(() => {
+        const ws = new WebSocket(websocketUrl);
 
         ws.onmessage = async (event: MessageEvent<Blob>) => {
             const brotli = await brotliPromise;
@@ -162,7 +164,7 @@ export const useFlashblocks = (): State => {
         return () => {
             ws.close();
         };
-    }, [url]);
+    }, [websocketUrl]);
 
     return state;
 };
