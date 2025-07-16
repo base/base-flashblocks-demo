@@ -35,7 +35,7 @@ function SendTransaction({highlightTransactions}: {highlightTransactions: (txn: 
                 onClick={() => {
                     switchChain({chainId : targetChain.id})
                 }}
-                className="bg-[#0052FF] py-2 px-4 rounded-full font-semibold">
+                className="bg-gray-100 text-black py-2 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors border border-gray-200">
                 Switch Network
             </button>
         );
@@ -57,7 +57,7 @@ function SendTransaction({highlightTransactions}: {highlightTransactions: (txn: 
                         }
                     );
                 }}
-                className="bg-[#0052FF] py-2 px-4 rounded-full font-semibold">
+                className="bg-blue-600 py-2 px-4 rounded-lg font-semibold text-white hover:bg-blue-700 transition-colors shadow-md">
                 Send Transaction
             </button>
     );
@@ -69,9 +69,9 @@ function AccountButton() {
     const { disconnect } = useDisconnect()
 
     if (isConnected) {
-        return <button className="bg-[#1A1A1A] py-2 px-4 rounded-full font-semibold" onClick={() => disconnect()}>Disconnect</button>
+        return <button className="bg-gray-100 text-black py-2 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors border border-gray-200" onClick={() => disconnect()}>Disconnect</button>
     } else {
-        return <button className="bg-[#0052FF] py-2 px-4 rounded-full font-semibold" onClick={() => connect({ connector: injected() })}>Connect</button>
+        return <button className="bg-blue-600 py-2 px-4 rounded-lg font-medium text-white hover:bg-blue-700 border border-transparent transition-colors" onClick={() => connect({ connector: injected() })}>Connect</button>
     }
 }
 
@@ -115,28 +115,29 @@ export function BlockExplorer() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0A0A0A] text-white">
+        <div className="min-h-screen bg-white text-black">
             <Header>
-                <NetworkSelector 
-                    selectedNetwork={selectedNetwork}
-                    onNetworkChange={setSelectedNetwork}
-                />
-                <Link href="/docs" className="bg-[#515151] py-2 px-4 rounded-full font-semibold">
+                <Link href="/docs" className="bg-gray-100 text-black py-2 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors border border-gray-200">
                     Start Building
                 </Link>
                 <AccountButton />
                 {sendTransactionButton()}
-                <div className="flex items-center gap-3 bg-[#1A1A1A] px-2 py-2 rounded-full">
+                <div className="h-6 w-px bg-gray-200"></div>
+                <div className="flex items-center gap-2 bg-gray-100 px-2 py-2 rounded-lg border border-gray-200">
                     <Switch
                         id="flash-mode"
                         checked={flashMode}
                         onCheckedChange={setFlashMode}
-                        className="data-[state=checked]:bg-[#0052FF]"
+                        className="data-[state=checked]:bg-blue-600"
                     />
-                    <Label htmlFor="flash-mode" className="text-sm cursor-pointer select-none">
-                        <Image src="/flashblocks.svg" alt="Flashblocks Logo" width={25} height={25} />
+                    <Label htmlFor="flash-mode" className="text-sm cursor-pointer select-none text-black">
+                        <Image src="/flashblocks.svg" alt="Flashblocks Logo" width={22} height={22} />
                     </Label>
                 </div>
+                <NetworkSelector 
+                    selectedNetwork={selectedNetwork}
+                    onNetworkChange={setSelectedNetwork}
+                />
             </Header>
 
             <div className="max-w-6xl mx-auto px-4 py-8">

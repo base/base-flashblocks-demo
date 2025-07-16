@@ -3,11 +3,13 @@ import Image from "next/image";
 import React from "react";
 
 export function Header({children}: {children: React.ReactNode}) {
-    return <nav className="border-b border-[#1A1A1A] bg-[#0A0A0A]/90 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <Link href="/">
-                <Image src="/Base_Wordmark_White.svg" alt="Base" width={100} height={30} />
-            </Link>
+    return <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div className="flex items-center">
+                <Link href="/">
+                    <Image src="/Base_Logo.svg" alt="Base" width={120} height={30} />
+                </Link>
+            </div>
             <div className="flex items-center gap-4">
                 {children}
             </div>

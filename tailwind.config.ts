@@ -49,6 +49,12 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
+  			},
+  			blue: {
+  				50: 'rgb(0, 0, 245, 0.05)',
+  				500: 'rgb(0, 0, 245, 0.5)',
+  				600: 'rgb(0, 0, 245)',
+  				700: 'rgb(0, 0, 220)'
   			}
   		},
   		borderRadius: {
