@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Block, SubBlock } from "@/utils/block-utils";
 import {parseTransaction} from 'viem/op-stack';
 import {OpStackTransactionSerialized} from "viem/chains";
-import {keccak256, TransactionRequestBase} from "viem";
+import {Hex, keccak256, TransactionRequestBase} from "viem";
 import brotliPromise from 'brotli-dec-wasm';
 
 
@@ -26,13 +26,18 @@ interface Flashblock {
         logs_bloom: string;
         gas_used: string;
         block_hash: string;
-        transactions: string[];
+        transactions?: string[];
     };
-    metadata: {
-        receipts: Record<string, unknown>;
+    metadata?: {
+        receipts?: Record<string, unknown> | null;
     };
 }
 
+const textDecoder = new TextDecoder();
+
+function transactionHash(transaction: string): string {
+    return keccak256(transaction as Hex);
+}
 
 export function flashBlockToBlock(flashBlock: Flashblock): Block {
     const block: Block = {
@@ -50,11 +55,19 @@ export function flashBlockToBlock(flashBlock: Flashblock): Block {
 }
 
 function convertBlock(flashblock: Flashblock, subBlock: SubBlock) {
-    for (const t of flashblock.diff.transactions) {
+    const transactions = flashblock.diff.transactions ?? [];
+    const transactionHashes: string[] = [];
+    const receiptHashes = flashblock.metadata?.receipts
+        ? Object.keys(flashblock.metadata.receipts)
+        : undefined;
+
+    for (const t of transactions) {
         try {
+            const hash = transactionHash(t);
+            transactionHashes.push(hash);
             const tx = parseTransaction(t as OpStackTransactionSerialized) as TransactionRequestBase;
             subBlock.transactions.push({
-                hash: keccak256(t as `0x{string}`),
+                hash,
                 from: tx.from || "",
                 to: tx.to || "",
                 value: tx.value ? tx.value : BigInt(0),
@@ -65,7 +78,37 @@ function convertBlock(flashblock: Flashblock, subBlock: SubBlock) {
         }
     }
 
-    subBlock.transactionHashes = Object.keys(flashblock.metadata.receipts);
+    subBlock.transactionHashes = receiptHashes ?? transactionHashes;
+}
+
+async function decodeFlashblockMessage(event: MessageEvent): Promise<Flashblock | undefined> {
+    if (typeof event.data === "string") {
+        return JSON.parse(event.data) as Flashblock;
+    }
+
+    if (!(event.data instanceof Blob) && !(event.data instanceof ArrayBuffer)) {
+        console.error("Unsupported WebSocket message type", typeof event.data);
+        return undefined;
+    }
+
+    const arrayBuffer = event.data instanceof Blob
+        ? await event.data.arrayBuffer()
+        : event.data;
+    const u8Data = new Uint8Array(arrayBuffer);
+    const textData = textDecoder.decode(u8Data);
+
+    if (textData.trim().startsWith("{")) {
+        return JSON.parse(textData) as Flashblock;
+    }
+
+    try {
+        const brotli = await brotliPromise;
+        const decompressedData = textDecoder.decode(brotli.decompress(u8Data));
+        return JSON.parse(decompressedData) as Flashblock;
+    } catch (decompressError) {
+        console.error("Error decompressing data", decompressError)
+        return undefined;
+    }
 }
 
 function updateBlock(block: Block, flashBlock: Flashblock): Block {
@@ -114,23 +157,9 @@ export const useFlashblocks = (websocketUrl: string): State => {
     useEffect(() => {
         const ws = new WebSocket(websocketUrl);
 
-        ws.onmessage = async (event: MessageEvent<Blob>) => {
-            const brotli = await brotliPromise;
-            const textData = await event.data.text()
-            let newFlashBlock: Flashblock | undefined;
-            if (textData.trim().startsWith("{")) {
-                newFlashBlock = JSON.parse(textData) as Flashblock;
-            } else {
-                try {
-                    const arrayBuffer = await event.data.arrayBuffer()
-                    const u8Data = new Uint8Array(arrayBuffer)
-                    const decompressedData = Buffer.from(brotli.decompress(u8Data)).toString("utf-8")
-                    newFlashBlock = JSON.parse(decompressedData) as Flashblock;
-                } catch (decompressError) {
-                    console.error("Error decompressing data", decompressError)
-                    return
-                }
-            }
+        ws.onmessage = async (event: MessageEvent) => {
+            const newFlashBlock = await decodeFlashblockMessage(event);
+            if (!newFlashBlock) return;
 
             setState((state) => {
                 const { blocks, pendingBlock } = state;
