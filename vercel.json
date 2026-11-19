@@ -1,0 +1,9 @@
+{
+    "redirects": [
+        {
+            "source": "/(.*)",
+            "destination": "https://docs.base.org/upgrades/denim/migrate-from-flashblocks",
+            "permanent": true
+        }
+    ]
+}

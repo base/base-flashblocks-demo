@@ -1,3 +1,6 @@
+> [!WARNING]
+> Deprecated. Base retired Flashblocks at the Denim upgrade (Base Mainnet, 2026-11-05), so this demo no longer receives data. The site redirects to [Migrate From Flashblocks](https://docs.base.org/upgrades/denim/migrate-from-flashblocks).
+
 ## Getting Started
 
 Setup your envvironment variables, you can do this by creating .env.local and setting a value for `BASE_RPC_URL`.
